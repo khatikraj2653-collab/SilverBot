@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SilverBot — AI Dual-Regime Silver Analyser</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:#14171A;font-family:'Inter',sans-serif;overflow-x:hidden;color:#DCE4E8;}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(184,196,204,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(184,196,204,0.025) 1px,transparent 1px);background-size:44px 44px;pointer-events:none;z-index:0;}
+.nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:14px 48px;border-bottom:1px solid rgba(184,196,204,0.1);background:rgba(20,23,26,0.85);backdrop-filter:blur(16px);}
+.nav-logo{display:flex;align-items:center;gap:10px;}
+.nav-icon{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,#6B7A88,#C8D4DC);display:flex;align-items:center;justify-content:center;font-size:16px;box-shadow:0 0 18px rgba(184,196,204,0.4);}
+.nav-name{font-family:'Space Grotesk',sans-serif;font-size:17px;font-weight:700;color:#FFFFFF;letter-spacing:-0.3px;}
+.nav-links{display:flex;gap:32px;}
+.nav-links a{font-size:13px;color:#8A96A0;text-decoration:none;font-weight:500;transition:color 0.2s;}
+.nav-links a:hover{color:#C8D4DC;}
+.nav-cta{background:linear-gradient(135deg,#6B7A88,#C8D4DC);color:#14171A;border:none;border-radius:9px;padding:9px 22px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;box-shadow:0 0 18px rgba(184,196,204,0.4);transition:all 0.2s;}
+.nav-cta:hover{box-shadow:0 0 30px rgba(200,212,220,0.6);transform:translateY(-1px);}
+
+.ticker{position:relative;z-index:20;background:rgba(20,23,26,0.98);border-bottom:1px solid rgba(184,196,204,0.15);padding:8px 0;overflow:hidden;margin-top:70px;}
+.tape{display:flex;animation:scroll 24s linear infinite;width:max-content;}
+.ti{display:flex;align-items:center;gap:8px;padding:0 26px;border-right:1px solid rgba(184,196,204,0.08);}
+.tsym{font-family:'Space Grotesk',sans-serif;font-size:12px;font-weight:700;color:#C8D4DC;}
+.tprice{font-size:12px;font-weight:600;color:#B8C4CC;}
+.tchg{font-size:11px;font-weight:600;padding:1px 7px;border-radius:4px;}
+.tup{color:#34D399;background:rgba(52,211,153,0.1);}
+.tdn{color:#F87171;background:rgba(248,113,113,0.1);}
+@keyframes scroll{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
+
+#hero{min-height:100vh;background:radial-gradient(ellipse at 65% 40%,#20242A 0%,#14171A 65%);position:relative;display:flex;overflow:hidden;padding-top:20px;}
+.orb{position:absolute;border-radius:50%;pointer-events:none;filter:blur(100px);z-index:0;}
+.o1{width:600px;height:600px;background:rgba(107,122,136,0.12);top:-200px;left:-200px;}
+.o2{width:400px;height:400px;background:rgba(184,196,204,0.06);bottom:-100px;right:-100px;}
+
+.hero{flex:1;display:flex;align-items:center;padding:20px 48px;position:relative;z-index:5;gap:40px;}
+.hero .left{flex:1;max-width:560px;}
+.hero .right{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;min-height:420px;}
+
+.badge{display:inline-flex;align-items:center;gap:7px;background:rgba(107,122,136,0.15);border:1px solid rgba(184,196,204,0.3);border-radius:20px;padding:5px 14px;font-size:10.5px;font-weight:600;color:#C8D4DC;margin-bottom:20px;letter-spacing:0.05em;}
+.bdot{width:7px;height:7px;border-radius:50%;background:#C8D4DC;box-shadow:0 0 8px rgba(200,212,220,0.9);animation:blink 1.8s ease-in-out infinite;}
+@keyframes blink{0%,100%{opacity:0.3;}50%{opacity:1;}}
+
+.hero-title{font-family:'Space Grotesk',sans-serif;font-size:2.6rem;font-weight:800;color:#FFFFFF;line-height:1.15;letter-spacing:-0.7px;margin-bottom:16px;}
+.hero-title em{font-style:normal;background:linear-gradient(135deg,#C8D4DC,#8A96A0);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.hero-desc{font-size:0.95rem;color:#8A96A0;line-height:1.9;margin-bottom:24px;max-width:520px;}
+
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:28px;}
+.chip{background:rgba(107,122,136,0.12);border:1px solid rgba(184,196,204,0.2);color:#B8C4CC;border-radius:7px;padding:4px 12px;font-size:11px;font-weight:600;}
+
+.ctas{display:flex;align-items:center;gap:12px;margin-bottom:36px;}
+.btn-primary{background:linear-gradient(135deg,#6B7A88,#C8D4DC);color:#14171A;border:none;border-radius:10px;padding:14px 32px;font-size:15px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;box-shadow:0 0 22px rgba(184,196,204,0.45);transition:all 0.22s;}
+.btn-primary:hover{box-shadow:0 0 36px rgba(200,212,220,0.65);transform:translateY(-2px);}
+.btn-secondary{background:transparent;color:#B8C4CC;border:1px solid rgba(184,196,204,0.25);border-radius:10px;padding:14px 26px;font-size:14px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.22s;}
+.btn-secondary:hover{border-color:rgba(184,196,204,0.5);color:#C8D4DC;}
+
+.stats{display:flex;gap:36px;padding-top:20px;border-top:1px solid rgba(184,196,204,0.08);}
+.stat-num{font-family:'Space Grotesk',sans-serif;font-size:1.3rem;font-weight:700;color:#C8D4DC;}
+.stat-lbl{font-size:9.5px;color:#5A6570;margin-top:2px;font-weight:500;letter-spacing:0.04em;}
+
+@keyframes bounce{0%,100%{transform:translateY(0) rotate(0deg);}50%{transform:translateY(-10px) rotate(-3deg);}}
+@keyframes bfloat{0%,100%{transform:translateY(0);}50%{transform:translateY(-8px);}}
+
+.robot{display:flex;flex-direction:column;align-items:center;filter:drop-shadow(0 0 20px rgba(184,196,204,0.35));animation:bounce 3s ease-in-out infinite;position:relative;z-index:5;}
+.r-head{width:110px;height:95px;background:radial-gradient(circle at 38% 28%,#FFFFFF,#E8ECEE 55%,#B8C4CC);border-radius:38px;position:relative;display:flex;align-items:center;justify-content:center;box-shadow:inset -3px -3px 12px rgba(107,122,136,0.15),0 4px 20px rgba(0,0,0,0.3);}
+.r-head::before{content:'';position:absolute;top:10px;left:16px;width:32px;height:9px;background:rgba(255,255,255,0.65);border-radius:6px;transform:rotate(-10deg);}
+.r-visor{width:84px;height:32px;background:linear-gradient(135deg,#6B7A88 0%,#8A96A0 50%,#4A5560 100%);border-radius:11px;display:flex;align-items:center;justify-content:center;gap:12px;box-shadow:0 0 18px rgba(184,196,204,0.5);}
+.r-eye{width:13px;height:13px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#FFFFFF,#C8D4DC);box-shadow:0 0 10px rgba(200,212,220,0.95);}
+.r-neck{width:28px;height:12px;background:linear-gradient(to bottom,#E8ECEE,#C0CCD4);border-radius:5px;margin:1px 0;}
+.r-body{width:100px;height:85px;background:radial-gradient(circle at 36% 28%,#FFFFFF,#E0E6E9 55%,#B0BCC4);border-radius:26px;position:relative;display:flex;align-items:center;justify-content:center;box-shadow:inset -2px -2px 10px rgba(107,122,136,0.12),0 4px 18px rgba(0,0,0,0.25);}
+.r-screen{width:52px;height:34px;background:linear-gradient(135deg,#1A1D20,#252A2E);border-radius:8px;border:1.5px solid rgba(184,196,204,0.4);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;}
+.r-bar1{width:32px;height:3px;background:linear-gradient(90deg,#C8D4DC,#FFFFFF);border-radius:2px;}
+.r-bar2{width:24px;height:3px;background:linear-gradient(90deg,#6B7A88,#C8D4DC);border-radius:2px;opacity:0.7;}
+.r-antenna-ball{width:12px;height:12px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#FFFFFF,#C8D4DC);box-shadow:0 0 14px rgba(200,212,220,0.9);}
+.r-antenna-stick{width:4px;height:16px;background:linear-gradient(to bottom,#E0E6E9,#A0AEB8);border-radius:3px;}
+.r-armL{position:absolute;left:-26px;top:14px;width:22px;height:50px;background:radial-gradient(circle at 40% 30%,#FFFFFF,#E0E6E9 60%,#B0BCC4);border-radius:11px;}
+.r-armR{position:absolute;right:-26px;top:14px;width:22px;height:50px;background:radial-gradient(circle at 40% 30%,#FFFFFF,#E0E6E9 60%,#B0BCC4);border-radius:11px;}
+.r-legs{display:flex;gap:12px;margin-top:3px;}
+.r-leg{width:24px;height:32px;background:radial-gradient(circle at 40% 30%,#E8ECEE,#B0BCC4);border-radius:10px;}
+.r-feet{display:flex;gap:8px;margin-top:2px;}
+.r-foot{width:32px;height:14px;background:linear-gradient(to right,#3A4550,#1A1D20);border-radius:7px;box-shadow:0 3px 8px rgba(0,0,0,0.4);}
+
+.bub{position:absolute;border-radius:10px;padding:7px 14px;font-size:11px;font-weight:500;white-space:nowrap;background:rgba(30,35,40,0.92);border:1px solid rgba(184,196,204,0.35);color:#C8D4DC;z-index:6;transition:opacity 0.4s ease;}
+.bub-l1{left:-4%;top:12%;animation:bfloat 3.2s ease-in-out infinite;}
+.bub-l2{left:-10%;top:40%;animation:bfloat 4.1s ease-in-out infinite 0.5s;}
+.bub-l3{left:-2%;top:70%;animation:bfloat 3.6s ease-in-out infinite 1s;}
+.bub-r1{right:2%;top:14%;animation:bfloat 3.8s ease-in-out infinite 0.3s;}
+.bub-r2{right:0%;top:42%;animation:bfloat 4.4s ease-in-out infinite 0.9s;}
+.bub-r3{right:4%;top:72%;animation:bfloat 3.1s ease-in-out infinite 1.5s;}
+
+.glow-ring{position:absolute;top:50%;left:50%;width:260px;height:260px;transform:translate(-50%,-50%);background:radial-gradient(circle,rgba(200,212,220,0.35) 0%,rgba(184,196,204,0.15) 40%,transparent 70%);border-radius:50%;z-index:1;animation:shine-pulse 3s ease-in-out infinite;}
+@keyframes shine-pulse{0%,100%{opacity:0.6;transform:translate(-50%,-50%) scale(1);}50%{opacity:1;transform:translate(-50%,-50%) scale(1.1);}}
+
+#features{position:relative;z-index:5;padding:100px 48px 80px;background:linear-gradient(to bottom,#14171A,#191D22);}
+.section-badge{display:inline-flex;align-items:center;gap:7px;background:rgba(107,122,136,0.1);border:1px solid rgba(184,196,204,0.18);border-radius:20px;padding:4px 14px;font-size:10.5px;font-weight:600;color:#C8D4DC;margin-bottom:14px;letter-spacing:0.05em;}
+.section-title{font-family:'Space Grotesk',sans-serif;font-size:1.9rem;font-weight:700;color:#FFFFFF;margin-bottom:10px;letter-spacing:-0.4px;}
+.section-sub{font-size:0.85rem;color:#8A96A0;line-height:1.8;margin-bottom:48px;max-width:560px;}
+.factors-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:48px;}
+.factor-card{background:rgba(30,35,40,0.7);border:1px solid rgba(107,122,136,0.2);border-radius:14px;padding:20px;transition:all 0.25s;}
+.factor-card:hover{border-color:rgba(184,196,204,0.35);transform:translateY(-3px);box-shadow:0 8px 30px rgba(107,122,136,0.12);}
+.fc-icon{font-size:1.5rem;margin-bottom:10px;}
+.fc-title{font-family:'Space Grotesk',sans-serif;font-size:0.9rem;font-weight:600;color:#C8D4DC;margin-bottom:6px;}
+.fc-desc{font-size:0.75rem;color:#8A96A0;line-height:1.7;}
+.fc-tag{display:inline-block;background:rgba(107,122,136,0.15);border:1px solid rgba(107,122,136,0.2);color:#B8C4CC;border-radius:5px;padding:2px 8px;font-size:9.5px;font-weight:600;margin-top:8px;}
+
+#howitworks{position:relative;z-index:5;padding:80px 48px;background:rgba(25,29,34,0.8);}
+.hiw-grid{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:start;margin-top:40px;}
+.hiw-steps{display:flex;flex-direction:column;gap:28px;}
+.step{display:flex;gap:18px;align-items:flex-start;}
+.step-num{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#6B7A88,#C8D4DC);display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:700;color:#14171A;flex-shrink:0;box-shadow:0 0 16px rgba(184,196,204,0.4);}
+.step-title{font-family:'Space Grotesk',sans-serif;font-size:0.95rem;font-weight:600;color:#C8D4DC;margin-bottom:5px;}
+.step-desc{font-size:0.78rem;color:#8A96A0;line-height:1.75;}
+.step-desc strong{color:#B8C4CC;}
+.hiw-problems{background:rgba(30,35,40,0.7);border:1px solid rgba(107,122,136,0.2);border-radius:16px;padding:28px;}
+.prob-title{font-family:'Space Grotesk',sans-serif;font-size:1rem;font-weight:600;color:#FFFFFF;margin-bottom:6px;}
+.prob-sub{font-size:0.75rem;color:#5A6570;margin-bottom:20px;line-height:1.6;}
+.prob-item{display:flex;gap:12px;margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid rgba(107,122,136,0.1);}
+.prob-item:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+.prob-icon{font-size:1.1rem;flex-shrink:0;margin-top:2px;}
+.prob-head{font-size:0.8rem;font-weight:600;color:#DCE4E8;margin-bottom:3px;}
+.prob-body{font-size:0.73rem;color:#5A6570;line-height:1.65;}
+
+#research{position:relative;z-index:5;padding:80px 48px;background:linear-gradient(to bottom,#191D22,#14171A);}
+.research-card{background:rgba(30,35,40,0.75);border:1px solid rgba(107,122,136,0.22);border-radius:18px;padding:36px;}
+.rc-label{font-size:9.5px;font-weight:700;letter-spacing:0.12em;color:#5A6570;text-transform:uppercase;margin-bottom:10px;}
+.rc-title{font-family:'Space Grotesk',sans-serif;font-size:1.2rem;font-weight:700;color:#FFFFFF;margin-bottom:8px;line-height:1.3;}
+.rc-desc{font-size:0.78rem;color:#8A96A0;line-height:1.8;margin-bottom:18px;max-width:700px;}
+.rc-tags{display:flex;flex-wrap:wrap;gap:6px;}
+.rc-tag{background:rgba(107,122,136,0.15);border:1px solid rgba(107,122,136,0.18);color:#B8C4CC;border-radius:6px;padding:3px 10px;font-size:10px;font-weight:600;}
+
+#cta{position:relative;z-index:5;padding:80px 48px;text-align:center;background:radial-gradient(ellipse at 50% 50%,#20242A 0%,#14171A 70%);}
+.cta-title{font-family:'Space Grotesk',sans-serif;font-size:2rem;font-weight:700;color:#FFFFFF;margin-bottom:12px;letter-spacing:-0.4px;}
+.cta-title em{font-style:normal;background:linear-gradient(135deg,#C8D4DC,#8A96A0);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.cta-sub{font-size:0.85rem;color:#8A96A0;margin-bottom:32px;line-height:1.8;}
+
+footer{position:relative;z-index:5;padding:28px 48px;border-top:1px solid rgba(184,196,204,0.08);display:flex;align-items:center;justify-content:space-between;}
+.footer-text{font-size:11px;color:#5A6570;}
+.footer-right{font-size:11px;color:#5A6570;text-align:right;}
+
+@media (max-width:900px){
+  .hero{flex-direction:column;}
+  .hero .right{margin-top:40px;}
+  .factors-grid{grid-template-columns:1fr 1fr;}
+  .hiw-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+<nav class="nav">
+  <div class="nav-logo">
+    <div class="nav-icon">⚪</div>
+    <span class="nav-name">SilverBot</span>
+  </div>
+  <div class="nav-links">
+    <a href="#features" onclick="document.getElementById('features').scrollIntoView({behavior:'smooth'});return false;">Features</a>
+    <a href="#howitworks" onclick="document.getElementById('howitworks').scrollIntoView({behavior:'smooth'});return false;">How it works</a>
+    <a href="#research" onclick="document.getElementById('research').scrollIntoView({behavior:'smooth'});return false;">Research</a>
+  </div>
+  <button class="nav-cta" onclick="goApp()">Get Started →</button>
+</nav>
+
+<div class="ticker"><div class="tape" id="tape">Loading live prices...</div></div>
+
+<section id="hero">
+  <div class="orb o1"></div><div class="orb o2"></div>
+  <div class="hero">
+    <div class="left">
+      <div class="badge"><div class="bdot"></div> LIVE · 9-Factor Dual-Regime Analysis</div>
+      <h1 class="hero-title">Is Silver Industrial or <em>Monetary</em> Right Now?</h1>
+      <p class="hero-desc">SilverBot tests which force is dominating silver right now &mdash; industrial demand or monetary/safe-haven demand &mdash; using <strong>9 real-time causal factors</strong>, generating separate Industrial and Monetary strength scores plus a combined Safe Haven signal.</p>
+      <div class="chips">
+        <span class="chip">LangGraph</span>
+        <span class="chip">RAG · FAISS</span>
+        <span class="chip">GPT-4o-mini</span>
+        <span class="chip">FRED API</span>
+        <span class="chip">yfinance</span>
+        <span class="chip">Tavily MCP</span>
+      </div>
+      <div class="ctas">
+        <button class="btn-primary" onclick="goApp()">Analyze Silver Now →</button>
+        <button class="btn-secondary" onclick="document.getElementById('howitworks').scrollIntoView({behavior:'smooth'})">How it works</button>
+      </div>
+      <div class="stats">
+        <div><div class="stat-num">9</div><div class="stat-lbl">CAUSAL FACTORS</div></div>
+        <div><div class="stat-num">2</div><div class="stat-lbl">DUAL REGIMES</div></div>
+        <div><div class="stat-num">MSc</div><div class="stat-lbl">WARWICK AI</div></div>
+        <div><div class="stat-num">SSRN</div><div class="stat-lbl">TARGET VENUE</div></div>
+      </div>
+    </div>
+
+    <div class="right">
+      <div class="bub bub-l1" id="bub1">⚪ Silver: Dual-Regime signal</div>
+      <div class="bub bub-l2" id="bub2">🏭 Industrial demand tracked</div>
+      <div class="bub bub-l3" id="bub3">📉 Rate environment tracked</div>
+      <div class="bub bub-r1" id="bub4">☀️ Solar demand: live</div>
+      <div class="bub bub-r2" id="bub5">⚖️ Gold-Silver ratio: live</div>
+      <div class="bub bub-r3" id="bub6">🌏 Geopolitical risk: elevated</div>
+      <div class="glow-ring"></div>
+      <style>
+      @keyframes f1{0%,100%{transform:translateY(-30px);}50%{transform:translateY(-52px);}}
+      @keyframes f2{0%,100%{transform:translateY(-44px);}50%{transform:translateY(-22px);}}
+      .robots-row{display:flex;gap:20px;align-items:flex-end;position:relative;z-index:5;}
+      .rw1{animation:f1 3.8s ease-in-out infinite;}
+      .rw2{animation:f2 3.2s ease-in-out infinite;}
+      .robot2{display:flex;flex-direction:column;align-items:center;filter:drop-shadow(0 0 20px rgba(184,196,204,0.3));}
+      .r2-head{width:90px;height:78px;background:radial-gradient(circle at 38% 28%,#FFFFFF,#E8ECEE 55%,#B8C4CC);border-radius:30px 30px 22px 22px;position:relative;display:flex;align-items:center;justify-content:center;box-shadow:inset -2px -2px 10px rgba(107,122,136,0.12),0 4px 18px rgba(0,0,0,0.3);}
+      .r2-visor{width:62px;height:24px;background:linear-gradient(135deg,#5A6B7A 0%,#7A8B9A 50%,#3A4550 100%);border-radius:9px;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 0 14px rgba(90,107,122,0.6);}
+      .r2-eye{width:10px;height:10px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#FFFFFF,#DCE4E8);box-shadow:0 0 8px rgba(220,228,232,0.9);}
+      .r2-neck{width:22px;height:9px;background:linear-gradient(to bottom,#E8ECEE,#C0CCD4);border-radius:5px;margin:1px 0;}
+      .r2-body{width:82px;height:70px;background:radial-gradient(circle at 36% 28%,#FFFFFF,#E0E6E9 55%,#B0BCC4);border-radius:20px;position:relative;display:flex;align-items:center;justify-content:center;box-shadow:inset -2px -2px 10px rgba(107,122,136,0.08),0 4px 16px rgba(0,0,0,0.25);}
+      .r2-screen{width:40px;height:26px;background:linear-gradient(135deg,#1A1D20,#252A2E);border-radius:6px;border:1.5px solid rgba(184,196,204,0.4);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;}
+      .r2-bar1{width:26px;height:2.5px;background:linear-gradient(90deg,#C8D4DC,#FFFFFF);border-radius:2px;}
+      .r2-bar2{width:18px;height:2.5px;background:linear-gradient(90deg,#6B7A88,#C8D4DC);border-radius:2px;opacity:0.7;}
+      .r2-armL{position:absolute;left:-18px;top:11px;width:18px;height:40px;background:radial-gradient(circle at 40% 30%,#FFFFFF,#E0E6E9 60%,#B0BCC4);border-radius:9px;}
+      .r2-armR{position:absolute;right:-18px;top:11px;width:18px;height:40px;background:radial-gradient(circle at 40% 30%,#FFFFFF,#E0E6E9 60%,#B0BCC4);border-radius:9px;}
+      .r2-legs{display:flex;gap:9px;margin-top:2px;}
+      .r2-leg{width:18px;height:24px;background:radial-gradient(circle at 40% 30%,#E8ECEE,#B0BCC4);border-radius:8px;}
+      .r2-feet{display:flex;gap:6px;margin-top:2px;}
+      .r2-foot{width:24px;height:10px;background:linear-gradient(to right,#3A4550,#1A1D20);border-radius:5px;box-shadow:0 3px 6px rgba(0,0,0,0.4);}
+      </style>
+      <div class="robots-row">
+        <div class="rw2">
+          <div class="robot2">
+            <div class="r2-head"><div class="r2-visor"><div class="r2-eye"></div><div class="r2-eye"></div></div></div>
+            <div class="r2-neck"></div>
+            <div class="r2-body">
+              <div class="r2-armL"></div><div class="r2-armR"></div>
+              <div class="r2-screen"><div class="r2-bar1"></div><div class="r2-bar2"></div></div>
+            </div>
+            <div class="r2-legs"><div class="r2-leg"></div><div class="r2-leg"></div></div>
+            <div class="r2-feet"><div class="r2-foot"></div><div class="r2-foot"></div></div>
+          </div>
+          <svg width="140" height="36" viewBox="0 0 140 36" style="margin-top:3px;">
+            <defs><radialGradient id="sbg2" cx="50%" cy="60%" r="50%"><stop offset="0%" stop-color="#C8D4DC" stop-opacity="0.5"/><stop offset="100%" stop-color="#6B7A88" stop-opacity="0"/></radialGradient></defs>
+            <ellipse cx="70" cy="20" rx="68" ry="12" fill="url(#sbg2)"/>
+            <ellipse cx="70" cy="20" rx="68" ry="12" fill="none" stroke="#C8D4DC" stroke-width="1.2" opacity="0.7"/>
+          </svg>
+        </div>
+        <div class="rw1">
+          <div class="robot">
+            <div class="r-antenna-ball"></div>
+            <div class="r-antenna-stick"></div>
+            <div class="r-head"><div class="r-visor"><div class="r-eye"></div><div class="r-eye"></div></div></div>
+            <div class="r-neck"></div>
+            <div class="r-body">
+              <div class="r-armL"></div><div class="r-armR"></div>
+              <div class="r-screen"><div class="r-bar1"></div><div class="r-bar2"></div></div>
+            </div>
+            <div class="r-legs"><div class="r-leg"></div><div class="r-leg"></div></div>
+            <div class="r-feet"><div class="r-foot"></div><div class="r-foot"></div></div>
+          </div>
+          <svg width="160" height="40" viewBox="0 0 160 40" style="margin-top:3px;">
+            <defs><radialGradient id="sbg1" cx="50%" cy="60%" r="50%"><stop offset="0%" stop-color="#C8D4DC" stop-opacity="0.55"/><stop offset="100%" stop-color="#6B7A88" stop-opacity="0"/></radialGradient></defs>
+            <ellipse cx="80" cy="24" rx="78" ry="14" fill="url(#sbg1)"/>
+            <ellipse cx="80" cy="24" rx="78" ry="14" fill="none" stroke="#C8D4DC" stroke-width="1.3" opacity="0.75"/>
+            <ellipse cx="80" cy="24" rx="60" ry="10" fill="none" stroke="#8A96A0" stroke-width="0.9" opacity="0.5"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="features">
+  <div style="max-width:1100px;margin:0 auto;">
+    <div class="section-badge">⚡ 9-Factor Dual-Regime Framework</div>
+    <h2 class="section-title">Every signal that moves silver's dual nature</h2>
+    <p class="section-sub">SilverBot analyses silver across 2 categories &mdash; Industrial and Monetary/Safe-Haven &mdash; each scored by the LLM using RAG-retrieved historical context, weighted by domain-expert rules, and combined into 3 separate toggles.</p>
+    <div class="factors-grid">
+      <div class="factor-card"><div class="fc-icon">📉</div><div class="fc-title">Rate Environment</div><div class="fc-desc">Fed Rate + Real Yields combined &mdash; the classic opportunity-cost mechanism shared with gold.</div><span class="fc-tag">MONETARY</span></div>
+      <div class="factor-card"><div class="fc-icon">⚖️</div><div class="fc-title">Gold-Silver Ratio</div><div class="fc-desc">A historically mean-reverting signal unique to silver &mdash; extreme ratios often predict catch-up rallies.</div><span class="fc-tag">MONETARY</span></div>
+      <div class="factor-card"><div class="fc-icon">😨</div><div class="fc-title">Risk Sentiment</div><div class="fc-desc">VIX + S&P 500 combined &mdash; silver's safe-haven reaction is less reliable than gold's.</div><span class="fc-tag">MONETARY</span></div>
+      <div class="factor-card"><div class="fc-icon">⛏️</div><div class="fc-title">Mining Supply Growth</div><div class="fc-desc">~70% of silver is mined as a byproduct of copper/zinc/lead &mdash; structurally inelastic supply.</div><span class="fc-tag">INDUSTRIAL</span></div>
+      <div class="factor-card"><div class="fc-icon">☀️</div><div class="fc-title">Solar Panel Demand</div><div class="fc-desc">~15-20% of global silver demand now goes to photovoltaics &mdash; a genuinely new structural driver.</div><span class="fc-tag">INDUSTRIAL</span></div>
+      <div class="factor-card"><div class="fc-icon">🏭</div><div class="fc-title">Industrial Production</div><div class="fc-desc">Manufacturing health directly drives electronics/EV/medical silver demand &mdash; gold has no equivalent.</div><span class="fc-tag">INDUSTRIAL</span></div>
+      <div class="factor-card"><div class="fc-icon">💵</div><div class="fc-title">USD Index</div><div class="fc-desc">Silver is dollar-denominated globally, same mechanism as gold.</div><span class="fc-tag">MONETARY</span></div>
+      <div class="factor-card"><div class="fc-icon">🌏</div><div class="fc-title">Geopolitical Risk</div><div class="fc-desc">Dual channel: safe-haven demand AND mining/supply-chain disruption risk simultaneously.</div><span class="fc-tag">MONETARY</span></div>
+      <div class="factor-card"><div class="fc-icon">📊</div><div class="fc-title">Inflation Expectations</div><div class="fc-desc">Inconsistent inflation-hedge reputation, complicated further by silver's industrial demand component.</div><span class="fc-tag">MONETARY</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="howitworks">
+  <div style="max-width:1100px;margin:0 auto;">
+    <div class="section-badge">🔬 Architecture</div>
+    <h2 class="section-title">How SilverBot was built</h2>
+    <p class="section-sub">Unlike gold, silver has a genuine dual nature &mdash; roughly half industrial demand, half monetary/safe-haven demand. SilverBot was designed from the ground up to surface this, rather than force silver into gold's single-toggle framework.</p>
+    <div class="hiw-grid">
+      <div class="hiw-steps">
+        <div class="step"><div class="step-num">1</div><div><div class="step-title">2 Parallel LangGraph Subgraphs</div><div class="step-desc">An <strong>Industrial subgraph</strong> and a <strong>Monetary subgraph</strong> fetch their respective factors simultaneously before feeding into the scoring node.</div></div></div>
+        <div class="step"><div class="step-num">2</div><div><div class="step-title">Dual-Score Calculation</div><div class="step-desc">Industrial and Monetary strength are calculated <strong>independently</strong> against their own weight subtotals &mdash; they can diverge, which is the whole point.</div></div></div>
+        <div class="step"><div class="step-num">3</div><div><div class="step-title">Dominant Regime Detection</div><div class="step-desc">Python compares the two scores to flag <strong>ALIGNED</strong> or <strong>DIVERGENT</strong> regimes &mdash; divergence is the most academically interesting case.</div></div></div>
+        <div class="step"><div class="step-num">4</div><div><div class="step-title">RAG-Grounded Scoring</div><div class="step-desc">A <strong>FAISS vector store</strong> retrieves each factor's historical causal relationship to silver specifically, not just borrowed from gold.</div></div></div>
+      </div>
+      <div class="hiw-problems">
+        <div class="prob-title">Why Gold's Framework Doesn't Fit Silver</div>
+        <div class="prob-sub">Silver's dual nature breaks single-toggle safe-haven models.</div>
+        <div class="prob-item"><div class="prob-icon">⚠️</div><div><div class="prob-head">Conflicting Signals Get Hidden</div><div class="prob-body">A single ON/OFF toggle can average away the most interesting case: industrial-bearish while monetary-bullish (or vice versa) at the same time.</div></div></div>
+        <div class="prob-item"><div class="prob-icon">⚠️</div><div><div class="prob-head">No Industrial Demand Signal</div><div class="prob-body">Gold has essentially zero industrial use. Silver is ~50% industrial &mdash; solar, electronics, EVs &mdash; requiring genuinely different factors.</div></div></div>
+        <div class="prob-item"><div class="prob-icon">⚠️</div><div><div class="prob-head">Different Supply Dynamics</div><div class="prob-body">Silver is largely a byproduct of base-metal mining, unlike gold's primary-mined supply &mdash; a structurally different market.</div></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="research">
+  <div style="max-width:1100px;margin:0 auto;">
+    <div class="section-badge">📄 Academic Research</div>
+    <h2 class="section-title">Published Research</h2>
+    <p class="section-sub">SilverBot is the empirical foundation for a paper testing whether silver's dual industrial/monetary nature requires fundamentally different causal modeling than gold.</p>
+    <div class="research-card">
+      <div class="rc-label">Target: SSRN + Finance Research Letters</div>
+      <div class="rc-title">Dual-Regime Silver Analysis: Testing Divergence Between Industrial and Monetary Demand Signals</div>
+      <div class="rc-desc">This paper presents SilverBot, a 9-factor RAG-grounded dual-regime system for silver market analysis. Unlike gold's single safe-haven framework, silver's genuine industrial/monetary duality is modeled as two independently-scored categories, allowing detection of divergent regimes &mdash; periods where industrial and monetary signals disagree &mdash; as natural experiments for testing multi-factor causal models against single-factor alternatives.</div>
+      <div class="rc-tags">
+        <span class="rc-tag">LangGraph</span><span class="rc-tag">RAG · FAISS</span><span class="rc-tag">Dual-Regime Modeling</span><span class="rc-tag">Financial NLP</span><span class="rc-tag">Deterministic Weighting</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="cta">
+  <div class="section-badge" style="margin:0 auto 16px;">🚀 Try SilverBot</div>
+  <h2 class="cta-title">Ready to test silver's <em>dual nature</em>?</h2>
+  <p class="cta-sub">Get Industrial %, Monetary %, and a Combined Safe Haven ON/OFF signal, in seconds.</p>
+  <button class="btn-primary" onclick="goApp()">Launch SilverBot →</button>
+  <div style="margin-top:16px;font-size:11px;color:#5A6570;">Free to use · No signup required · MSc Applied AI · University of Warwick</div>
+</section>
+
+<footer>
+  <div style="display:flex;align-items:center;gap:9px;">
+    <div class="nav-icon" style="width:28px;height:28px;font-size:13px;">⚪</div>
+    <span style="font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:700;color:#8A96A0;">SilverBot</span>
+  </div>
+  <div class="footer-text" style="color:#C8D4DC;font-weight:600;font-size:13px;">Built by Raj Tejpal Khatik · MSc Applied AI · University of Warwick · 2026</div>
+  <div class="footer-right">Target: SSRN + Finance Research Letters<br>Not financial advice</div>
+</footer>
+
+<script>
+function goApp(){window.location.href='http://localhost:8503';}
+
+var prices={SILVER:{price:0,prev:0},GOLD:{price:0,prev:0}};
+function fmt(n){return n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});}
+function buildTape(){
+  var h='';
+  for(var i=0;i<2;i++){
+    Object.entries(prices).forEach(function(e){
+      var s=e[0],d=e[1],c=d.price-d.prev,p=d.prev?(c/d.prev*100):0,u=c>=0;
+      h+=`<div class="ti"><span class="tsym">${s}</span><span class="tprice">$${fmt(d.price)}</span><span class="tchg ${u?'tup':'tdn'}">${u?'▲':'▼'} ${Math.abs(p).toFixed(2)}%</span></div>`;
+    });
+  }
+  document.getElementById('tape').innerHTML=h;
+}
+async function fetchOne(symbol){
+  var res=await fetch('https://api.gold-api.com/price/'+symbol);
+  var data=await res.json();
+  return data.price;
+}
+async function fetchPrices(){
+  try{
+    var silver=await fetchOne('XAG');
+    var gold=await fetchOne('XAU');
+    prices.SILVER.prev=prices.SILVER.price||silver;
+    prices.SILVER.price=silver;
+    prices.GOLD.prev=prices.GOLD.price||gold;
+    prices.GOLD.price=gold;
+    buildTape();
+  }catch(e){
+    document.getElementById('tape').innerHTML='<div class="ti"><span class="tprice">Live prices unavailable</span></div>';
+  }
+}
+fetchPrices();
+setInterval(fetchPrices,60000);
+
+const bubPhrases=["⚪ Silver: Dual-Regime signal","🏭 Industrial demand tracked","📉 Rate environment tracked","☀️ Solar demand: live","⚖️ Gold-Silver ratio: live","🌏 Geopolitical risk: elevated","💵 USD Index: tracked live","⛏️ Mining supply: monitored","🏦 Fed rate: FOMC tracked","📊 Inflation expectations: live","🎯 No hallucination scoring","📚 RAG-grounded analysis"];
+const bubIndices=[0,2,4,6,8,10];
+function rotateBubbles(){
+  for(let i=1;i<=6;i++){
+    const el=document.getElementById('bub'+i);
+    if(!el)continue;
+    el.style.opacity='0';
+    setTimeout(()=>{
+      bubIndices[i-1]=(bubIndices[i-1]+6)%bubPhrases.length;
+      el.textContent=bubPhrases[bubIndices[i-1]];
+      el.style.opacity='1';
+    },400);
+  }
+}
+setInterval(rotateBubbles,5000);
+</script>
+</body>
+</html>
