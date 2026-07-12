@@ -12,3 +12,4 @@ yfinance
 faiss-cpu
 sentence-transformers
 python-dotenv
+mcp==1.28.1
