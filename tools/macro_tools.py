@@ -2,12 +2,14 @@ import os
 from langchain_core.tools import tool
 from fredapi import Fred
 from dotenv import load_dotenv
+from tools.cache_utils import cached_tool, TTL_RATE_ENV, TTL_WEEKLY
 
 load_dotenv()
 fred = Fred(api_key=os.getenv("FRED_API_KEY"))
 
 
 @tool
+@cached_tool(TTL_RATE_ENV)
 def get_rate_environment() -> str:
     """Fetches Fed Funds Rate and 10Y TIPS Real Yield from FRED, combined into one
     'Rate Environment' signal since both drive silver via the same opportunity-cost mechanism."""
@@ -20,6 +22,7 @@ def get_rate_environment() -> str:
 
 
 @tool
+@cached_tool(TTL_RATE_ENV)
 def get_inflation_expectations() -> str:
     """Fetches the 5-Year Breakeven Inflation Rate from FRED, a market-based measure of expected inflation."""
     try:
@@ -30,6 +33,7 @@ def get_inflation_expectations() -> str:
 
 
 @tool
+@cached_tool(TTL_WEEKLY)
 def get_industrial_production() -> str:
     """Fetches the Industrial Production Index from FRED - measures actual factory/mining/utility
     output, a direct proxy for industrial silver demand (electronics, solar, EVs)."""

@@ -1,10 +1,12 @@
 import yfinance as yf
 from langchain_core.tools import tool
+from tools.cache_utils import cached_tool, TTL_GOLD_SILVER, TTL_RISK_SENTIMENT, TTL_USD_INDEX
 
 yf.set_tz_cache_location("D:\\yf_cache")
 
 
 @tool
+@cached_tool(TTL_GOLD_SILVER)
 def get_gold_silver_ratio() -> str:
     """Fetches the current Gold-Silver Ratio (gold price / silver price) - a historically
     mean-reverting signal unique to silver; extreme ratios often predict silver catch-up rallies."""
@@ -18,6 +20,7 @@ def get_gold_silver_ratio() -> str:
 
 
 @tool
+@cached_tool(TTL_RISK_SENTIMENT)
 def get_risk_sentiment() -> str:
     """Fetches VIX and S&P 500 1-month growth combined into one 'Risk Sentiment' signal,
     both proxying risk-on/risk-off rotation between equities and defensive assets."""
@@ -32,6 +35,7 @@ def get_risk_sentiment() -> str:
 
 
 @tool
+@cached_tool(TTL_USD_INDEX)
 def get_usd_index() -> str:
     """Fetches the current USD Index (DXY) value - silver is dollar-denominated globally,
     same mechanism as gold."""

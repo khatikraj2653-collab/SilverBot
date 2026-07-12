@@ -6,6 +6,7 @@ import concurrent.futures
 from langchain_core.tools import tool
 from langchain_mcp_adapters.client import MultiServerMCPClient
 from dotenv import load_dotenv
+from tools.cache_utils import cached_tool, TTL_WEEKLY, TTL_GEOPOLITICAL
 
 load_dotenv()
 
@@ -35,8 +36,6 @@ def sentence_truncate(text: str, limit: int = 2500) -> str:
             return window[:idx + 1].strip()
     return text[:limit].rsplit(' ', 1)[0].strip() + "..."
 
-
-import concurrent.futures
 
 async def _mcp_tavily_search_async(query: str, max_results: int) -> str:
     client = MultiServerMCPClient({
@@ -92,6 +91,7 @@ def tavily_search(query: str, max_results: int = 5) -> str:
 
 
 @tool
+@cached_tool(TTL_WEEKLY)
 def get_mining_supply_growth() -> str:
     """Searches for recent silver mining supply data - silver is often mined as a byproduct
     of copper/zinc/lead, making supply more inelastic than gold's primary-mined supply."""
@@ -103,6 +103,7 @@ def get_mining_supply_growth() -> str:
 
 
 @tool
+@cached_tool(TTL_WEEKLY)
 def get_solar_panel_demand() -> str:
     """Searches for recent solar panel/photovoltaic demand trends - a genuinely new structural
     silver demand driver, with ~15-20% of global silver demand now going to solar."""
@@ -114,6 +115,7 @@ def get_solar_panel_demand() -> str:
 
 
 @tool
+@cached_tool(TTL_GEOPOLITICAL)
 def get_geopolitical_risk() -> str:
     """Searches for current geopolitical conflict and war risk signals affecting silver via
     both safe-haven demand and mining/supply-chain disruption."""
