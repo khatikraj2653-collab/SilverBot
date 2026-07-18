@@ -1,0 +1,11 @@
+date,event,combined_status,industrial_status,monetary_status,silver_price,silver_ma50,gold_price,gold_ma50,copper_price,copper_ma50,monetary_regime_gt,industrial_regime_gt,combined_correct,monetary_correct,industrial_correct
+2025-09-17,FOMC meeting,OFF,OFF,ON,41.72,38.95,3681.8,3425.74,4.57,4.84,ALIGNED,DIVERGENT,False,True,True
+2025-10-29,FOMC meeting,ON,ON,OFF,47.72,44.52,3983.7,3789.85,5.23,4.75,ALIGNED,ALIGNED,True,False,True
+2025-11-20,VIX spike (26.4),ON,ON,OFF,50.25,47.62,4056.5,3966.69,4.96,4.92,ALIGNED,ALIGNED,True,False,True
+2025-12-10,FOMC meeting,OFF,OFF,OFF,60.38,50.81,4196.4,4084.42,5.28,5.06,ALIGNED,ALIGNED,False,False,False
+2026-01-08,Iran protest crackdown / internet shutdown,OFF,ON,OFF,74.72,58.98,4449.7,4209.39,5.75,5.28,ALIGNED,ALIGNED,False,False,True
+2026-01-28,FOMC meeting,OFF,OFF,OFF,113.11,70.99,5301.6,4409.42,5.89,5.49,ALIGNED,ALIGNED,False,False,False
+2026-02-28,US-Israel strikes on Iran begin (war outbreak),OFF,ON,OFF,92.68,82.49,5230.5,4762.75,6.0,5.79,ALIGNED,ALIGNED,False,False,True
+2026-03-18,FOMC meeting (during Iran war / Hormuz blockade),OFF,OFF,OFF,77.24,85.88,4889.9,4947.02,5.55,5.85,ALIGNED,ALIGNED,True,True,True
+2026-04-29,FOMC meeting,OFF,OFF,OFF,71.57,78.34,4545.2,4847.52,5.88,5.79,ALIGNED,DIVERGENT,True,True,False
+2026-06-17,FOMC meeting (first Warsh-chaired),OFF,ON,OFF,70.7,75.44,4358.9,4568.81,6.48,6.21,ALIGNED,DIVERGENT,True,True,True
