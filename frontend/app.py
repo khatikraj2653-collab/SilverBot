@@ -1,6 +1,13 @@
 import os
 import sys
 import time
+from zoneinfo import ZoneInfo
+from datetime import datetime
+
+UK_TZ = ZoneInfo("Europe/London")
+
+def uk_time_str():
+    return datetime.now(UK_TZ).strftime("%Y-%m-%d %H:%M")
 import sqlite3
 import json
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -397,7 +404,7 @@ if not st.session_state.result:
             parsed = parse_prediction(result.get("prediction", ""))
             save_history(parsed["combined_status"], f"{parsed['combined_strength']}%",
                          f"{parsed['industrial_pct']}%", f"{parsed['monetary_pct']}%",
-                         time.strftime("%H:%M"), result)
+                         uk_time_str(), result)
             st.session_state.history = load_history()
             st.rerun()
 
