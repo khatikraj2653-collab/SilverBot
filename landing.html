@@ -127,8 +127,46 @@ body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(
 .rc-label{font-size:9.5px;font-weight:700;letter-spacing:0.12em;color:#5A6570;text-transform:uppercase;margin-bottom:10px;}
 .rc-title{font-family:'Space Grotesk',sans-serif;font-size:1.2rem;font-weight:700;color:#FFFFFF;margin-bottom:8px;line-height:1.3;}
 .rc-desc{font-size:0.78rem;color:#8A96A0;line-height:1.8;margin-bottom:18px;max-width:700px;}
-.rc-tags{display:flex;flex-wrap:wrap;gap:6px;}
+.rc-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:20px;}
 .rc-tag{background:rgba(107,122,136,0.15);border:1px solid rgba(107,122,136,0.18);color:#B8C4CC;border-radius:6px;padding:3px 10px;font-size:10px;font-weight:600;}
+.rc-btns{display:flex;gap:12px;flex-wrap:wrap;}
+.rc-btn{background:linear-gradient(135deg,#6B7A88,#C8D4DC);color:#14171A;border:none;border-radius:9px;padding:11px 24px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;box-shadow:0 0 18px rgba(184,196,204,0.35);transition:all 0.2s;white-space:nowrap;}
+.rc-btn:hover{box-shadow:0 0 28px rgba(200,212,220,0.55);transform:translateY(-1px);}
+.rc-btn-outline{display:inline-flex;align-items:center;gap:7px;background:transparent;border:1px solid rgba(184,196,204,0.3);color:#C8D4DC;border-radius:9px;padding:10px 23px;font-size:13px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;text-decoration:none;transition:all 0.2s;white-space:nowrap;}
+.rc-btn-outline:hover{border-color:rgba(184,196,204,0.6);background:rgba(107,122,136,0.1);}
+
+#researchpage{display:none;position:fixed;inset:0;background:#14171A;z-index:200;overflow-y:auto;}
+.rp-nav{display:flex;align-items:center;justify-content:space-between;padding:16px 48px;border-bottom:1px solid rgba(184,196,204,0.1);background:rgba(20,23,26,0.92);backdrop-filter:blur(12px);position:sticky;top:0;z-index:10;}
+.rp-back{background:rgba(184,196,204,0.1);border:1px solid rgba(184,196,204,0.2);color:#C8D4DC;border-radius:8px;padding:8px 16px;font-size:12px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.2s;}
+.rp-back:hover{background:rgba(184,196,204,0.18);}
+.rp-content{max-width:760px;margin:0 auto;padding:60px 48px;}
+.rp-category{font-size:10px;font-weight:700;letter-spacing:0.12em;color:#5A6570;text-transform:uppercase;margin-bottom:10px;}
+.rp-title{font-family:'Space Grotesk',sans-serif;font-size:1.6rem;font-weight:700;color:#FFFFFF;margin-bottom:14px;line-height:1.3;}
+.rp-authors{font-size:12px;color:#B8C4CC;margin-bottom:8px;}
+.rp-venue{font-size:11px;color:#8A96A0;margin-bottom:24px;}
+.rp-divider{height:1px;background:rgba(184,196,204,0.1);margin:24px 0;}
+.rp-section-title{font-size:10.5px;font-weight:600;color:#DCE4E8;margin-bottom:10px;text-transform:uppercase;letter-spacing:0.06em;}
+.rp-body{font-size:0.82rem;color:#8A96A0;line-height:1.9;margin-bottom:20px;}
+.rp-highlight{background:rgba(50,58,66,0.4);border:1px solid rgba(107,122,136,0.2);border-radius:10px;padding:16px 20px;margin:16px 0;}
+.rp-highlight p{font-size:0.8rem;color:#DCE4E8;line-height:1.8;}
+.rp-tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:20px;}
+.rp-tag{background:rgba(107,122,136,0.15);border:1px solid rgba(107,122,136,0.18);color:#B8C4CC;border-radius:6px;padding:4px 12px;font-size:10.5px;font-weight:600;}
+.rp-links{display:flex;gap:12px;flex-wrap:wrap;margin:18px 0 26px;}
+.rp-ssrn-btn{display:inline-flex;align-items:center;gap:7px;background:linear-gradient(135deg,#6B7A88,#C8D4DC);color:#14171A;border-radius:9px;padding:11px 22px;font-size:12.5px;font-weight:700;text-decoration:none;box-shadow:0 0 18px rgba(184,196,204,0.35);transition:all 0.2s;}
+.rp-ssrn-btn:hover{box-shadow:0 0 28px rgba(200,212,220,0.55);transform:translateY(-1px);}
+.rp-ssrn-btn-outline{display:inline-flex;align-items:center;gap:7px;background:transparent;border:1px solid rgba(184,196,204,0.3);color:#C8D4DC;border-radius:9px;padding:10px 21px;font-size:12.5px;font-weight:600;text-decoration:none;transition:all 0.2s;}
+.rp-ssrn-btn-outline:hover{border-color:rgba(184,196,204,0.6);background:rgba(107,122,136,0.1);}
+.rp-h2{font-family:'Space Grotesk',sans-serif;font-size:1.15rem;font-weight:700;color:#FFFFFF;margin:36px 0 14px;letter-spacing:-0.2px;}
+.rp-h3{font-size:0.9rem;font-weight:700;color:#DCE4E8;margin:22px 0 10px;}
+.rp-table-wrap{overflow-x:auto;margin:14px 0 22px;border-radius:10px;border:1px solid rgba(107,122,136,0.2);}
+.rp-table{width:100%;border-collapse:collapse;font-size:0.72rem;}
+.rp-table th{background:rgba(50,58,66,0.5);color:#DCE4E8;text-align:left;padding:7px 11px;font-weight:600;white-space:nowrap;border-bottom:1px solid rgba(107,122,136,0.25);}
+.rp-table td{padding:6px 11px;color:#8A96A0;border-bottom:1px solid rgba(107,122,136,0.1);white-space:nowrap;}
+.rp-table tr:last-child td{border-bottom:none;}
+.rp-table tr.rp-total td{color:#C8D4DC;font-weight:700;}
+.rp-refs{font-size:0.72rem;color:#5A6570;line-height:2;}
+.rp-refs p{margin-bottom:8px;}
+.rp-caption{font-size:0.72rem;color:#B8C4CC;font-weight:600;margin:18px 0 8px;}
 
 #cta{position:relative;z-index:5;padding:80px 48px;text-align:center;background:radial-gradient(ellipse at 50% 50%,#20242A 0%,#14171A 70%);}
 .cta-title{font-family:'Space Grotesk',sans-serif;font-size:2rem;font-weight:700;color:#FFFFFF;margin-bottom:12px;letter-spacing:-0.4px;}
@@ -186,7 +224,7 @@ footer{position:relative;z-index:5;padding:28px 48px;border-top:1px solid rgba(1
         <div><div class="stat-num">9</div><div class="stat-lbl">CAUSAL FACTORS</div></div>
         <div><div class="stat-num">2</div><div class="stat-lbl">DUAL REGIMES</div></div>
         <div><div class="stat-num">MSc</div><div class="stat-lbl">WARWICK AI</div></div>
-        <div><div class="stat-num">SSRN</div><div class="stat-lbl">TARGET VENUE</div></div>
+        <div><div class="stat-num">SSRN</div><div class="stat-lbl">LIVE PREPRINT</div></div>
       </div>
     </div>
 
@@ -309,13 +347,17 @@ footer{position:relative;z-index:5;padding:28px 48px;border-top:1px solid rgba(1
   <div style="max-width:1100px;margin:0 auto;">
     <div class="section-badge">📄 Academic Research</div>
     <h2 class="section-title">Published Research</h2>
-    <p class="section-sub">SilverBot is the empirical foundation for a paper testing whether silver's dual industrial/monetary nature requires fundamentally different causal modeling than gold.</p>
+    <p class="section-sub">SilverBot is the empirical foundation for a live SSRN preprint that cross-regime backtests its industrial/monetary decomposition against gold and copper ground-truth proxies.</p>
     <div class="research-card">
-      <div class="rc-label">Target: SSRN + Finance Research Letters</div>
-      <div class="rc-title">Dual-Regime Silver Analysis: Testing Divergence Between Industrial and Monetary Demand Signals</div>
-      <div class="rc-desc">This paper presents SilverBot, a 9-factor RAG-grounded dual-regime system for silver market analysis. Unlike gold's single safe-haven framework, silver's genuine industrial/monetary duality is modeled as two independently-scored categories, allowing detection of divergent regimes &mdash; periods where industrial and monetary signals disagree &mdash; as natural experiments for testing multi-factor causal models against single-factor alternatives.</div>
+      <div class="rc-label">Live SSRN Preprint</div>
+      <div class="rc-title">SilverBot: A Dual-Regime Analyzer for Silver's Industrial-Monetary Duality — Cross-Regime Evidence for a Crisis-Type-Dependent Reversal</div>
+      <div class="rc-desc">This paper presents SilverBot, a nine-factor, LLM-orchestrated system that decomposes silver's behavior into two parallel sub-scores &mdash; Industrial Strength% and Monetary Strength% &mdash; alongside an ALIGNED/DIVERGENT regime indicator. Backtested across four structurally distinct macro-financial regimes using copper as an industrial ground-truth proxy and gold as a monetary ground-truth proxy, the Industrial sub-regime outperforms the Monetary sub-regime in three of four regimes (significantly so at n=60, p=0.041) &mdash; but this pattern reverses specifically during the 2020 COVID liquidity crisis, while the 2008 financial crisis preserves the original Industrial-favoring direction. We interpret this as evidence that silver's industrial-monetary asymmetry is conditional on crisis type, refining the classical Batten, Ciner &amp; Lucey (2010) framework.</div>
       <div class="rc-tags">
-        <span class="rc-tag">LangGraph</span><span class="rc-tag">RAG · FAISS</span><span class="rc-tag">Dual-Regime Modeling</span><span class="rc-tag">Financial NLP</span><span class="rc-tag">Deterministic Weighting</span>
+        <span class="rc-tag">LangGraph</span><span class="rc-tag">RAG · FAISS</span><span class="rc-tag">Dual-Regime Modeling</span><span class="rc-tag">McNemar's Test</span><span class="rc-tag">Cross-Regime Backtesting</span><span class="rc-tag">Financial NLP</span>
+      </div>
+      <div class="rc-btns">
+        <button class="rc-btn" onclick="showResearch()">Read Full Paper →</button>
+        <a class="rc-btn-outline" href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=7203201" target="_blank" rel="noopener">View on SSRN ↗</a>
       </div>
     </div>
   </div>
@@ -335,11 +377,183 @@ footer{position:relative;z-index:5;padding:28px 48px;border-top:1px solid rgba(1
     <span style="font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:700;color:#8A96A0;">SilverBot</span>
   </div>
   <div class="footer-text" style="color:#C8D4DC;font-weight:600;font-size:13px;">Built by Raj Tejpal Khatik · MSc Applied AI · University of Warwick · 2026</div>
-  <div class="footer-right">Target: SSRN + Finance Research Letters<br>Not financial advice</div>
+  <div class="footer-right">Paper · SSRN Preprint<br>Not financial advice</div>
 </footer>
+
+<div id="researchpage">
+  <div class="rp-nav">
+    <button class="rp-back" onclick="hideResearch()">← Back to SilverBot</button>
+    <div style="display:flex;align-items:center;gap:8px;">
+      <div class="nav-icon" style="width:28px;height:28px;font-size:13px;">⚪</div>
+      <span style="font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:700;color:#FFFFFF;">SilverBot Research</span>
+    </div>
+    <div style="font-size:10px;color:#5A6570;">MSc Applied AI · University of Warwick</div>
+  </div>
+  <div class="rp-content">
+    <div class="rp-category">SSRN Preprint · 2026</div>
+    <h1 class="rp-title">SilverBot: A Dual-Regime Analyzer for Silver's Industrial-Monetary Duality — Cross-Regime Evidence for a Crisis-Type-Dependent Reversal</h1>
+    <div class="rp-authors">Raj Tejpal Khatik · MSc Applied AI, University of Warwick</div>
+    <div class="rp-venue">Live preprint on SSRN · Currently under review at a peer-reviewed journal</div>
+    <div class="rp-links">
+      <a class="rp-ssrn-btn" href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=7203201" target="_blank" rel="noopener">📄 Read Live on SSRN ↗</a>
+      <a class="rp-ssrn-btn-outline" href="https://silverbot-raj.streamlit.app" target="_blank" rel="noopener">Live Demo ↗</a>
+    </div>
+    <div class="rp-divider"></div>
+
+    <div class="rp-section-title">Abstract</div>
+    <div class="rp-body">Silver occupies a theoretically distinct position among precious metals: unlike gold, whose volatility is well-established to be explained primarily by monetary variables, silver's price behavior is simultaneously driven by industrial demand and monetary/safe-haven sentiment, with academic literature explicitly noting that the monetary-variable explanation that works for gold does not hold for silver (Batten, Ciner, &amp; Lucey, 2010). We present SilverBot, a nine-factor, LLM-orchestrated system that decomposes silver's behavior into two parallel sub-scores — Industrial Strength% and Monetary Strength% — alongside a combined classification and an ALIGNED/DIVERGENT regime indicator.</div>
+    <div class="rp-body">We backtest SilverBot across four independently constructed samples spanning four structurally distinct macro-financial regimes: a stratified sample of 60 dates during a 2025-26 gold-silver uptrend (Backtest 1), 10 genuine macro/geopolitical events within the same window (Backtest 2), 20 stratified dates during the 2020 COVID crash and recovery (Backtest 3), and 20 stratified dates during the 2008 global financial crisis (Backtest 4), using copper as an industrial ground-truth proxy and gold as a monetary ground-truth proxy. In three of four regimes, the Industrial sub-regime outperforms the Monetary sub-regime — significantly so in the largest sample (Backtest 1: 61.7% vs. 40.0%, n=60, McNemar's exact p=0.041).</div>
+    <div class="rp-body">Critically, this pattern reverses specifically during the 2020 COVID crisis (Monetary 95.0% vs. Industrial 65.0%, n=20), a regime defined by acute monetary/liquidity shock (zero interest rates, negative real yields, VIX above 60) rather than industrial-demand disruption, while the 2008 financial crisis — despite comparable severity — preserves the original Industrial-favoring direction (70.0% vs. 55.0%). We interpret this as evidence that the Industrial-Monetary asymmetry is not a fixed property of silver's dual nature but is itself conditional on the type of crisis — industrial-demand-driven versus monetary-liquidity-driven — a refinement of Batten, Ciner, and Lucey's (2010) classical framework that a single-regime backtest could not have revealed.</div>
+    <div class="rp-body" style="font-size:0.75rem;">*Live demo: <a href="https://silverbot-raj.streamlit.app" target="_blank" rel="noopener" style="color:#C8D4DC;">https://silverbot-raj.streamlit.app</a></div>
+
+    <div class="rp-h2">1. Introduction and Problem Statement</div>
+    <div class="rp-body">Silver's behavior does not fit neatly into either the "industrial commodity" or "safe-haven asset" category, and academic literature has emphasized this dual identity explicitly. Batten, Ciner, and Lucey (2010) find that gold's volatility is well-explained by monetary variables, while silver's is not, attributing this to silver's much larger industrial demand share. This finding has been extended to volatility spillovers between the metals (Batten, Ciner, &amp; Lucey, 2015) and echoed in the broader hedge/safe-haven literature (Baur &amp; Lucey, 2010; Baur &amp; McDermott, 2010).</div>
+    <div class="rp-body">We present SilverBot, a dual-regime LLM-orchestrated system that operationalizes this duality directly, and — following our companion GoldBot study's cross-regime methodology — backtest it across four structurally distinct macro-financial regimes rather than a single window. This design choice proves essential: while the Industrial-Monetary asymmetry predicted by Batten, Ciner, and Lucey holds and is statistically confirmed in our largest sample, it does not hold universally. Testing across a genuine liquidity crisis (2020) reveals a clean reversal, refining rather than merely confirming the classical framework.</div>
+
+    <div class="rp-h2">2. Related Work</div>
+    <div class="rp-body"><strong style="color:#DCE4E8;">Silver's industrial-monetary duality.</strong> Batten, Ciner, and Lucey (2010) is the foundational citation for this paper, finding gold's volatility well-explained by monetary factors while silver's is not.</div>
+    <div class="rp-body"><strong style="color:#DCE4E8;">Precious metals volatility spillovers.</strong> Batten, Ciner, and Lucey (2015) find evidence of persistent volatility spillover between silver and gold, motivating our gold-silver ratio and gold-price co-movement as SilverBot's monetary ground-truth proxy.</div>
+    <div class="rp-body"><strong style="color:#DCE4E8;">Gold hedge/safe-haven framework.</strong> Baur and Lucey (2010) and Baur and McDermott (2010) establish the weak/strong safe-haven distinction, extended here to silver's dual case using two reference assets (gold, copper).</div>
+    <div class="rp-body"><strong style="color:#DCE4E8;">Crisis heterogeneity in financial markets.</strong> While not the primary focus of the precious-metals literature cited above, our finding that asset relationships shift depending on crisis type (liquidity-driven vs. demand-driven) is consistent with a broader recognition in financial economics that "flight to safety" dynamics are not uniform across all crisis episodes — a point this paper's cross-regime design makes directly testable for silver's specific dual-factor structure.</div>
+    <div class="rp-body"><strong style="color:#DCE4E8;">Gap addressed.</strong> No existing work, to our knowledge, tests whether the industrial/monetary asymmetry in silver's price behavior is itself conditional on crisis type, using a live, decomposed, LLM-scored classification system across multiple structurally distinct historical regimes.</div>
+
+    <div class="rp-h2">3. Theoretical Framework</div>
+    <div class="rp-h3">3.1 The nine-factor dual-regime structure</div>
+    <div class="rp-table-wrap"><table class="rp-table">
+      <tr><th>Factor</th><th>Weight</th><th>Category</th><th>Theoretical channel</th></tr>
+      <tr><td>Rate Environment (Fed Rate + Real Yields)</td><td>14</td><td>Monetary</td><td style="white-space:normal;">Opportunity cost channel, same mechanism as gold</td></tr>
+      <tr><td>Gold-Silver Ratio</td><td>13</td><td>Monetary</td><td style="white-space:normal;">Mean-reverting relative-value signal</td></tr>
+      <tr><td>Risk Sentiment (VIX + S&amp;P 500)</td><td>12</td><td>Monetary</td><td style="white-space:normal;">Risk-on/risk-off rotation</td></tr>
+      <tr><td>Mining Supply Growth</td><td>12</td><td>Industrial</td><td style="white-space:normal;">Byproduct of copper/zinc/lead mining</td></tr>
+      <tr><td>Solar Panel Demand</td><td>11</td><td>Industrial</td><td style="white-space:normal;">~15-20% of global silver demand</td></tr>
+      <tr><td>USD Index</td><td>10</td><td>Monetary</td><td style="white-space:normal;">Dollar-denominated pricing mechanism</td></tr>
+      <tr><td>Industrial Production</td><td>10</td><td>Industrial</td><td style="white-space:normal;">Direct proxy for manufacturing/electronics/EV demand</td></tr>
+      <tr><td>Geopolitical Risk</td><td>9</td><td>Monetary</td><td style="white-space:normal;">Safe-haven trigger channel</td></tr>
+      <tr><td>Inflation Expectations</td><td>9</td><td>Monetary</td><td style="white-space:normal;">Inflation-hedging demand</td></tr>
+    </table></div>
+    <div class="rp-body">Industrial factors sum to weight 33; Monetary factors sum to weight 67.</div>
+    <div class="rp-h3">3.2 Scoring and dual aggregation</div>
+    <div class="rp-body">Each factor is scored by an LLM (GPT-4o-mini, temperature=0) on a bounded -10 to +10 scale. Combined, Industrial, and Monetary Strength% scores are computed, with an ALIGNED/DIVERGENT classification when the sub-regimes disagree.</div>
+
+    <div class="rp-h2">4. System Architecture</div>
+    <div class="rp-body">SilverBot is implemented as a LangGraph state machine with two parallel fetch subgraphs (Industrial, Monetary). Industrial factors and geopolitical risk are retrieved via live Tavily search; industrial production via FRED; gold-silver ratio, risk sentiment, and USD index via yfinance; rate environment and inflation expectations via FRED.</div>
+
+    <div class="rp-h2">5. Backtesting</div>
+    <div class="rp-h3">5.1 Methodology</div>
+    <div class="rp-body">Four backtests, each independently constructed:</div>
+    <div class="rp-table-wrap"><table class="rp-table">
+      <tr><th>Backtest</th><th>Design</th><th>n</th><th>Window</th><th>Regime type</th></tr>
+      <tr><td>1</td><td style="white-space:normal;">Stratified random dates</td><td>60</td><td>Sept 2025–June 2026</td><td>Uptrend</td></tr>
+      <tr><td>2</td><td style="white-space:normal;">Genuine macro/geopolitical events</td><td>10</td><td>Sept 2025–June 2026</td><td>Uptrend, mixed</td></tr>
+      <tr><td>3</td><td style="white-space:normal;">Stratified random dates</td><td>20</td><td>Jan–June 2020</td><td>COVID liquidity crisis</td></tr>
+      <tr><td>4</td><td style="white-space:normal;">Stratified random dates</td><td>20</td><td>Aug 2008–March 2009</td><td>Global financial/credit crisis</td></tr>
+    </table></div>
+    <div class="rp-body">Ground truth: Combined status against silver's own MA50; Monetary regime against gold's MA50 co-movement; Industrial regime against copper's MA50 co-movement. Backtests 3 and 4 use forced-neutral Tier 2 factors throughout (no historical text recovery attempted). Statistical treatment: McNemar's exact test for all paired comparisons, given both compared quantities are scored on identical dates.</div>
+
+    <div class="rp-h3">5.2 Backtest 1 (n=60): the confirmed baseline finding</div>
+    <div class="rp-table-wrap"><table class="rp-table">
+      <tr><th>Metric</th><th>Result</th></tr>
+      <tr><td style="white-space:normal;">Combined accuracy</td><td>46.7% (28/60)</td></tr>
+      <tr><td style="white-space:normal;">Naive always-ON baseline</td><td>66.7% (40/60)</td></tr>
+      <tr><td style="white-space:normal;">Combined vs. Naive (McNemar)</td><td>p=0.126</td></tr>
+      <tr><td style="white-space:normal;">Industrial accuracy</td><td>61.7% (37/60)</td></tr>
+      <tr><td style="white-space:normal;">Monetary accuracy</td><td>40.0% (24/60)</td></tr>
+      <tr class="rp-total"><td>Industrial vs. Monetary (paired McNemar)</td><td>p=0.041 — significant</td></tr>
+    </table></div>
+    <div class="rp-body">This sample was constructed incrementally (initial n=20, plus two independent n=20 expansion batches), with the Industrial-Monetary asymmetry strengthening to statistical significance only at the full n=60.</div>
+
+    <div class="rp-h3">5.3 Backtest 2 (n=10): genuine events, directionally consistent</div>
+    <div class="rp-table-wrap"><table class="rp-table">
+      <tr><th>Metric</th><th>Result</th></tr>
+      <tr><td style="white-space:normal;">Combined accuracy</td><td>50.0%</td></tr>
+      <tr><td style="white-space:normal;">Industrial accuracy</td><td>70.0%</td></tr>
+      <tr><td style="white-space:normal;">Monetary accuracy</td><td>40.0%</td></tr>
+    </table></div>
+    <div class="rp-body">Directionally consistent with Backtest 1. On February 28, 2026 (the Iran war outbreak), SilverBot's Industrial call correctly matched copper's actual bullish direction while its Monetary call missed gold and silver's actual bullish co-movement — a specific instance of the Industrial signal outperforming during a geopolitical, not purely liquidity-driven, shock.</div>
+
+    <div class="rp-h3">5.4 Backtest 3 (n=20): the COVID reversal</div>
+    <div class="rp-table-wrap"><table class="rp-table">
+      <tr><th>Metric</th><th>Result</th></tr>
+      <tr><td style="white-space:normal;">Combined accuracy</td><td>40.0% (8/20)</td></tr>
+      <tr><td style="white-space:normal;">Industrial accuracy</td><td>65.0% (13/20)</td></tr>
+      <tr><td style="white-space:normal;">Monetary accuracy</td><td>95.0% (19/20)</td></tr>
+      <tr><td style="white-space:normal;">Monetary vs. Industrial (paired McNemar)</td><td>p=0.070</td></tr>
+    </table></div>
+    <div class="rp-body">This is a clean reversal of Backtests 1 and 2. Industrial predictions were 19-of-20 constant OFF; Monetary predictions were 18-of-20 constant ON. Neither sub-regime discriminated much between individual dates — both again show the output-compression pattern documented in our companion GoldBot study — but in this specific regime, the Monetary sub-regime's constant bias happened to align far more consistently with actual gold/silver co-movement than the Industrial sub-regime's bias aligned with copper co-movement.</div>
+    <div class="rp-body"><strong style="color:#DCE4E8;">Why COVID specifically reverses the pattern:</strong> the 2020 crisis was defined overwhelmingly by monetary/liquidity shock — the Federal Reserve cut rates to near-zero, real yields turned negative, and VIX spiked above 60 — exactly the regime the Monetary factors (rate environment, risk sentiment) are designed to detect. Industrial demand for silver and copper both collapsed simultaneously under global lockdowns, plausibly reducing the discriminating value of silver-copper co-movement specifically, since both metals' industrial demand moved in the same direction for the same reason rather than reflecting silver-specific industrial dynamics.</div>
+
+    <div class="rp-h3">5.5 Backtest 4 (n=20): 2008 restores the original direction</div>
+    <div class="rp-table-wrap"><table class="rp-table">
+      <tr><th>Metric</th><th>Result</th></tr>
+      <tr><td style="white-space:normal;">Combined accuracy</td><td>55.0% (11/20)</td></tr>
+      <tr><td style="white-space:normal;">Industrial accuracy</td><td>70.0% (14/20)</td></tr>
+      <tr><td style="white-space:normal;">Monetary accuracy</td><td>55.0% (11/20)</td></tr>
+      <tr><td style="white-space:normal;">Naive always-ON baseline</td><td>50.0% (10/20)</td></tr>
+      <tr><td style="white-space:normal;">Industrial vs. Monetary (paired McNemar)</td><td>p=0.549</td></tr>
+    </table></div>
+    <div class="rp-body">Despite comparable severity to the COVID crisis, 2008 restores the original Industrial-favoring direction (though not at statistical significance at this sample size). Industrial predictions were fully constant OFF (20/20); Monetary predictions varied more (9 ON, 11 OFF). This is consistent with 2008 being simultaneously a credit crisis and a demand-collapse crisis, rather than the more purely monetary/liquidity-driven character of the COVID shock — silver-copper industrial co-movement plausibly retained more discriminating signal here than in 2020.</div>
+
+    <div class="rp-h3">5.6 Cross-regime synthesis: a crisis-type-dependent asymmetry</div>
+    <div class="rp-table-wrap"><table class="rp-table">
+      <tr><th>Test</th><th>Regime type</th><th>Industrial</th><th>Monetary</th><th>Winner</th></tr>
+      <tr><td style="white-space:normal;">Backtest 1 (n=60)</td><td>Uptrend</td><td>61.7%</td><td>40.0%</td><td style="white-space:normal;">Industrial (p=0.041, significant)</td></tr>
+      <tr><td style="white-space:normal;">Backtest 2 (n=10)</td><td>Mixed events</td><td>70.0%</td><td>40.0%</td><td>Industrial</td></tr>
+      <tr><td style="white-space:normal;">Backtest 3 (n=20)</td><td>Liquidity crisis</td><td>65.0%</td><td>95.0%</td><td style="white-space:normal;">Monetary (reversed)</td></tr>
+      <tr><td style="white-space:normal;">Backtest 4 (n=20)</td><td>Credit/demand crisis</td><td>70.0%</td><td>55.0%</td><td>Industrial</td></tr>
+    </table></div>
+    <div class="rp-body">Three of four regimes favor Industrial, one — the purest liquidity crisis in the sample — favors Monetary decisively. We interpret this not as a failure of the Industrial-Monetary asymmetry, but as a refinement: the asymmetry favoring Industrial signals appears to hold except when the crisis itself is primarily monetary/liquidity in character, in which case the Monetary sub-regime's factors (built specifically around rate environment and risk sentiment) dominate as one would theoretically expect. This is a more precise and more defensible claim than either "Industrial always wins" or "the pattern is unstable" — it is conditional, and the condition (crisis type) is independently identifiable.</div>
+
+    <div class="rp-h2">6. Generalization (Cross-Regime)</div>
+    <div class="rp-body">Testing across four structurally distinct regimes reveals that SilverBot's architectural generalization (the pipeline runs correctly and produces classifications regardless of historical period) does not imply generalization of which sub-regime dominates. This distinction — mirroring our companion GoldBot study's separation between mechanical and predictive generalization — is itself a useful methodological contribution: aggregate accuracy figures computed from a single regime cannot reveal crisis-type-conditional reversals of this kind.</div>
+
+    <div class="rp-h2">7. Limitations</div>
+    <div class="rp-body">
+      1. The COVID reversal (Backtest 3) does not itself reach conventional statistical significance (p=0.070) at n=20 alone, though it is directionally clean and large in magnitude (30 percentage points).<br><br>
+      2. The 2008 result (Backtest 4) is directionally consistent with the original pattern but not statistically significant (p=0.549) at this sample size.<br><br>
+      3. Neither Industrial nor Monetary sub-regime shows genuine per-date discrimination in Backtests 3 or 4 — both again exhibit the output-compression pattern (near-constant classifications) documented for GoldBot, meaning the crisis-type-dependent reversal reflects which constant bias happened to align with the regime's trend, not evidence of the model discriminating between distinct events within either crisis.<br><br>
+      4. No multiple-comparisons correction was applied across the significance tests reported in this paper.<br><br>
+      5. Tier 2 (Tavily-sourced) weight remains 32/100 forced-neutral across all four backtests; GDELT-based historical recovery was not extended to SilverBot's three Tier 2 factors in any backtest.<br><br>
+      6. No validation against an established academic geopolitical risk benchmark (e.g., the Caldara-Iacoviello GPR index) has been performed for SilverBot.<br><br>
+      7. Only one liquidity-crisis regime (2020) and one credit/demand-crisis regime (2008) were tested; replication across additional instances of each crisis type would strengthen the crisis-type-dependent thesis considerably.<br><br>
+      8. The initial ground-truth implementation error (checking sub-regimes against silver's own direction rather than the gold/copper proxies) was caught and corrected before final results were computed in all four backtests.
+    </div>
+
+    <div class="rp-h2">8. Conclusion and Future Work</div>
+    <div class="rp-body">We present SilverBot, a dual-regime LLM-orchestrated system decomposing silver's classically-documented industrial/monetary duality (Batten, Ciner, &amp; Lucey, 2010), and subject it to backtesting across four structurally distinct macro-financial regimes — a stratified 2025-26 uptrend sample (n=60, statistically confirming Industrial &gt; Monetary at p=0.041), a genuine-event sample from the same window, the 2020 COVID liquidity crisis, and the 2008 global financial crisis. Our central finding is that the Industrial-Monetary asymmetry is not a fixed property of silver's dual nature: it holds in three of four regimes but reverses cleanly and substantially during the COVID crisis specifically, a regime distinguished from 2008 by its overwhelmingly monetary/liquidity-driven (rather than credit- and demand-driven) character. This crisis-type-dependent reversal is, to our knowledge, a novel refinement of the classical industrial-monetary framework, made visible only by testing across genuinely distinct crisis types rather than relying on a single backtest window.</div>
+    <div class="rp-body">Future work should prioritize: (a) testing additional instances of both liquidity-driven crises (e.g., 2022's rapid rate-hiking cycle) and demand-driven crises to test whether the crisis-type-dependent reversal generalizes beyond these two specific historical episodes; (b) extending the GDELT historical-recovery pipeline to SilverBot's Tavily-sourced factors; (c) validating geopolitical_risk scoring against the Caldara-Iacoviello GPR index; (d) investigating whether the output-compression pattern documented across both crisis regimes reflects a general limitation of the LLM scoring architecture under extreme conditions, consistent with findings in our companion GoldBot study.</div>
+
+    <div class="rp-h2">Availability</div>
+    <div class="rp-body">SilverBot is publicly deployed at <a href="https://silverbot-raj.streamlit.app" target="_blank" rel="noopener" style="color:#C8D4DC;">https://silverbot-raj.streamlit.app</a>, where readers may run live dual-regime analyses of silver's industrial and monetary status. Source code is maintained in a private repository; access requests may be directed to the corresponding author at khatikraj2653@gmail.com.</div>
+
+    <div class="rp-h2">References</div>
+    <div class="rp-refs">
+      <p>Batten, J. A., Ciner, C., &amp; Lucey, B. M. (2010). The macroeconomic determinants of volatility in precious metals markets. Resources Policy, 35(2), 65–71.</p>
+      <p>Batten, J. A., Ciner, C., &amp; Lucey, B. M. (2015). Which precious metals spill over on which, when and why? Some evidence. Applied Economics Letters, 22(6), 466–473.</p>
+      <p>Baur, D. G., &amp; Lucey, B. M. (2010). Is Gold a Hedge or a Safe Haven? An Analysis of Stocks, Bonds and Gold. The Financial Review, 45(2), 217–229.</p>
+      <p>Baur, D. G., &amp; McDermott, T. K. (2010). Is gold a safe haven? International evidence. Journal of Banking &amp; Finance, 34(8), 1886–1898.</p>
+      <p>Silver Institute. (2025). World Silver Survey 2025.</p>
+      <p>Federal Reserve Economic Data (FRED). Series: DFII10, FEDFUNDS, T5YIE, INDPRO.</p>
+      <p>Yahoo Finance (yfinance). Series: GC=F, SI=F, HG=F, DX-Y.NYB, ^VIX, ^GSPC.</p>
+    </div>
+
+    <div class="rp-h2">AI Disclosure Statement</div>
+    <div class="rp-body">This paper was developed with the assistance of Claude (Anthropic), an AI language model, which was used for: system architecture design and implementation guidance, statistical analysis scripting (McNemar's exact test, Wilson-score confidence intervals), and drafting and editing of the manuscript text. All experimental results, data, and findings reported are derived from the author's own code execution and evaluation runs. The author reviewed, verified, and takes full responsibility for all content, analyses, and conclusions presented in this paper.</div>
+
+    <div class="rp-divider"></div>
+    <div class="rp-links">
+      <a class="rp-ssrn-btn" href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=7203201" target="_blank" rel="noopener">📄 Read Live on SSRN ↗</a>
+    </div>
+    <div class="rp-tags">
+      <span class="rp-tag">LangGraph</span><span class="rp-tag">RAG · FAISS</span><span class="rp-tag">Dual-Regime Modeling</span>
+      <span class="rp-tag">McNemar's Test</span><span class="rp-tag">Cross-Regime Backtesting</span><span class="rp-tag">Financial NLP</span>
+    </div>
+  </div>
+</div>
 
 <script>
 function goApp(){try{window.parent.document.querySelector('[data-testid="stPageLink"] a').click();}catch(e){}}
+function showResearch(){document.getElementById('researchpage').style.display='block';document.body.style.overflow='hidden';window.scrollTo(0,0);}
+function hideResearch(){document.getElementById('researchpage').style.display='none';document.body.style.overflow='';}
 
 var prices={SILVER:{price:0,prev:0},GOLD:{price:0,prev:0}};
 function fmt(n){return n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});}
