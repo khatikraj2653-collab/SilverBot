@@ -13,6 +13,9 @@ import json
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
 import streamlit as st
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from log_client import log_event
+from chat_bubble import render_chat_bubble
 from dotenv import load_dotenv
 from graph.workflow import app
 from tools.market_tools import get_silver_price
@@ -228,6 +231,11 @@ if "thread_id" not in st.session_state:
     st.session_state.thread_id = f"session_{int(time.time())}"
 if "followup_history" not in st.session_state:
     st.session_state.followup_history = []
+if "visit_logged" not in st.session_state:
+    log_event("visit", detail="analysis page")
+    st.session_state.visit_logged = True
+
+render_chat_bubble()
 
 with st.sidebar:
     st.markdown("""
@@ -348,6 +356,7 @@ if not st.session_state.result:
         st.markdown("</div>", unsafe_allow_html=True)
 
     if analyse:
+        log_event("search", detail="Silver analysis run")
         st.session_state.thread_id = f"session_{int(time.time())}"
         progress_bar = st.progress(0, text="Starting analysis...")
         ph_industrial = st.empty()
@@ -509,6 +518,7 @@ else:
         with st.spinner("Thinking..."):
             answer = answer_followup_question(followup_q.strip(), result)
         st.session_state.followup_history.append({"q": followup_q.strip(), "a": answer})
+        log_event("chat", question=followup_q.strip(), reply=answer)
         st.rerun()
 
     st.markdown("""
