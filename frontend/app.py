@@ -17,6 +17,60 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
+# SEO tags injected into the real top-level document (st.markdown runs in
+# Streamlit's own DOM, unlike st.components.v1.html which sandboxes into an
+# iframe Google's crawler won't associate with this page's <head>).
+st.markdown("""
+<script>
+(function() {
+  document.title = "SilverBot — AI Silver Dual-Regime Analyser";
+  function setMeta(attr, key, content) {
+    let el = document.querySelector(`meta[${attr}="${key}"]`);
+    if (!el) { el = document.createElement('meta'); el.setAttribute(attr, key); document.head.appendChild(el); }
+    el.setAttribute('content', content);
+  }
+  const desc = "9-factor AI agent testing whether industrial demand or monetary/safe-haven demand dominates silver right now, built by Raj Tejpal Khatik.";
+  setMeta('name', 'description', desc);
+  setMeta('property', 'og:title', "SilverBot — AI Silver Dual-Regime Analyser");
+  setMeta('property', 'og:description', desc);
+  setMeta('property', 'og:type', 'website');
+  setMeta('property', 'og:url', 'https://silverbot-raj.streamlit.app/');
+  setMeta('name', 'twitter:card', 'summary_large_image');
+  setMeta('name', 'twitter:title', "SilverBot — AI Silver Dual-Regime Analyser");
+  setMeta('name', 'twitter:description', desc);
+
+  let canonical = document.querySelector('link[rel="canonical"]');
+  if (!canonical) { canonical = document.createElement('link'); canonical.setAttribute('rel', 'canonical'); document.head.appendChild(canonical); }
+  canonical.setAttribute('href', 'https://silverbot-raj.streamlit.app/');
+
+  if (!document.getElementById('silverbot-jsonld')) {
+    const s = document.createElement('script');
+    s.type = 'application/ld+json';
+    s.id = 'silverbot-jsonld';
+    s.textContent = JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "SilverBot",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "Web",
+      "url": "https://silverbot-raj.streamlit.app/",
+      "description": desc,
+      "author": {
+        "@type": "Person",
+        "name": "Raj Tejpal Khatik",
+        "sameAs": [
+          "https://www.linkedin.com/in/raj-khatik-6ab086395",
+          "https://github.com/khatikraj2653-collab",
+          "https://portfolio-raj.pages.dev/"
+        ]
+      }
+    });
+    document.head.appendChild(s);
+  }
+})();
+</script>
+""", unsafe_allow_html=True)
+
 st.markdown("""
 <style>
 #MainMenu, footer, header { visibility: hidden; }
