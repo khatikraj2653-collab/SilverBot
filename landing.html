@@ -30,14 +30,13 @@ body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(
 .tdn{color:#F87171;background:rgba(248,113,113,0.1);}
 @keyframes scroll{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
 
-#hero{min-height:100vh;background:radial-gradient(ellipse at 65% 40%,#20242A 0%,#14171A 65%);position:relative;display:flex;overflow:hidden;padding-top:20px;}
+#hero{min-height:100vh;background:radial-gradient(ellipse at 65% 40%,#20242A 0%,#14171A 65%);position:relative;display:flex;flex-direction:column;overflow:hidden;}
 .orb{position:absolute;border-radius:50%;pointer-events:none;filter:blur(100px);z-index:0;}
 .o1{width:600px;height:600px;background:rgba(107,122,136,0.12);top:-200px;left:-200px;}
 .o2{width:400px;height:400px;background:rgba(184,196,204,0.06);bottom:-100px;right:-100px;}
 
-.hero{flex:1;display:flex;align-items:center;padding:20px 48px;position:relative;z-index:5;gap:40px;}
-.hero .left{flex:1;max-width:560px;}
-.hero .right{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;min-height:420px;}
+.hero-inner{flex:1;display:grid;grid-template-columns:460px 1fr;align-items:center;padding:40px 48px;position:relative;z-index:5;}
+.right{position:relative;height:100%;min-height:400px;display:flex;align-items:flex-end;justify-content:center;}
 
 .badge{display:inline-flex;align-items:center;gap:7px;background:rgba(107,122,136,0.15);border:1px solid rgba(184,196,204,0.3);border-radius:20px;padding:5px 14px;font-size:10.5px;font-weight:600;color:#C8D4DC;margin-bottom:20px;letter-spacing:0.05em;}
 .bdot{width:7px;height:7px;border-radius:50%;background:#C8D4DC;box-shadow:0 0 8px rgba(200,212,220,0.9);animation:blink 1.8s ease-in-out infinite;}
@@ -201,8 +200,8 @@ footer{position:relative;z-index:5;padding:28px 48px;border-top:1px solid rgba(1
 .footer-right{font-size:11px;color:#5A6570;text-align:right;}
 
 @media (max-width:900px){
-  .hero{flex-direction:column;}
-  .hero .right{margin-top:40px;}
+  .hero-inner{grid-template-columns:1fr;}
+  .right{margin-top:40px;}
   .factors-grid{grid-template-columns:1fr 1fr;}
   .hiw-grid{grid-template-columns:1fr;}
 }
@@ -226,7 +225,7 @@ footer{position:relative;z-index:5;padding:28px 48px;border-top:1px solid rgba(1
 
 <section id="hero">
   <div class="orb o1"></div><div class="orb o2"></div>
-  <div class="hero">
+  <div class="hero-inner">
     <div class="left">
       <div class="badge"><div class="bdot"></div> LIVE · 9-Factor Dual-Regime Analysis</div>
       <h1 class="hero-title">Is Silver Industrial or <em>Monetary</em> Right Now?</h1>
@@ -264,7 +263,7 @@ footer{position:relative;z-index:5;padding:28px 48px;border-top:1px solid rgba(1
       <style>
       @keyframes f1{0%,100%{transform:translateY(-30px);}50%{transform:translateY(-52px);}}
       @keyframes f2{0%,100%{transform:translateY(-44px);}50%{transform:translateY(-22px);}}
-      .robots-row{display:flex;gap:20px;align-items:flex-end;position:relative;z-index:5;}
+      .robots-row{display:flex;gap:60px;align-items:flex-end;justify-content:center;width:100%;padding-bottom:10px;}
       .rw1{animation:f1 3.8s ease-in-out infinite;}
       .rw2{animation:f2 3.2s ease-in-out infinite;}
       .robot2{display:flex;flex-direction:column;align-items:center;filter:drop-shadow(0 0 20px rgba(184,196,204,0.3));}
