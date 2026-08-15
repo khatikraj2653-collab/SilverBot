@@ -71,6 +71,17 @@ st.markdown("""
 </script>
 """, unsafe_allow_html=True)
 
+# Google Analytics (GA4)
+st.markdown("""
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-08KC1B3BFV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-08KC1B3BFV');
+</script>
+""", unsafe_allow_html=True)
+
 st.markdown("""
 <style>
 #MainMenu, footer, header { visibility: hidden; }
