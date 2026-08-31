@@ -4,6 +4,9 @@ AI dual-regime silver analyser — an agentic research tool that evaluates silve
 
 **Live app:** https://silverbot-raj.streamlit.app/
 
+## Demo
+![SilverBot demo](silverbot-demo.gif)
+
 ## Stack
 - Streamlit (frontend)
 - LangGraph + LangChain (agent orchestration, MCP adapters)
