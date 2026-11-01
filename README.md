@@ -4,6 +4,9 @@ AI dual-regime silver analyser — an agentic research tool that evaluates silve
 
 **Live app:** https://silverbot-raj.streamlit.app/
 
+## Key results
+Separate Industrial and Monetary strength scores. Industrial signals beat Monetary in 3 of 4 regimes (61.7% vs 40.0%, p=0.041 in the largest sample), but the pattern reverses in the 2020 liquidity crisis (Monetary 95.0% vs Industrial 65.0%). Research paper: SSRN 7203201 (under review).
+
 ## Demo
 ![SilverBot demo](silverbot-demo.gif)
 
