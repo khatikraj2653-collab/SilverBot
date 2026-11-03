@@ -92,7 +92,7 @@ st.markdown("""
 [data-testid="stSidebarNav"] { display: none !important; }
 .block-container { padding: 0 !important; max-width: 100% !important; }
 [data-testid="stAppViewContainer"], [data-testid="stMain"] {
-    background: #14171A !important;
+    background: #0C1014 !important;
 }
 
 [data-testid="stPageLink"] {
@@ -103,15 +103,15 @@ st.markdown("""
     width: auto !important;
 }
 [data-testid="stPageLink"] a {
-    background: linear-gradient(135deg, #6B7A88, #C8D4DC) !important;
+    background: radial-gradient(120% 90% at 30% 0%, rgba(255,255,255,.85), rgba(255,255,255,0) 55%), linear-gradient(180deg, #BFE0FF, #7FB6EE) !important;
     color: #14171A !important;
-    border: none !important;
-    border-radius: 9px !important;
+    border: 1px solid rgba(255,255,255,.55) !important;
+    border-radius: 99px !important;
     padding: 9px 22px !important;
     font-size: 13px !important;
-    font-weight: 600 !important;
+    font-weight: 700 !important;
     font-family: 'Inter', sans-serif !important;
-    box-shadow: 0 0 18px rgba(184,196,204,0.4) !important;
+    box-shadow: inset 0 1px 0 #fff, 0 10px 28px -6px rgba(110,170,235,.6) !important;
     text-decoration: none !important;
     display: inline-block !important;
 }
@@ -140,7 +140,7 @@ with open(landing_path, 'r', encoding='utf-8') as f:
 iframe_fixes = """
 <style>
 #welcomeModal { display: none !important; }
-body { background: #14171A !important; }
+body { background: #0C1014 !important; }
 #hero { min-height: 650px !important; padding-top: 40px !important; }
 .nav-cta { display: none !important; }
 .nav { justify-content: center !important; gap: 60px !important; }
@@ -149,6 +149,6 @@ body { background: #14171A !important; }
 """
 html_content = html_content.replace('<head>', '<head>' + iframe_fixes)
 
-st.components.v1.html(html_content, height=2850, scrolling=True)
+st.components.v1.html(html_content, height=5400, scrolling=True)
 
 render_chat_bubble()

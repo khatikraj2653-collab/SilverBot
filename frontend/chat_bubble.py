@@ -124,6 +124,33 @@ BUBBLE_CSS = """
     color: #8A96A0 !important;
     opacity: 1 !important;
 }
+/* liquid glass */
+.st-key-silverbot_bubble_toggle button {
+    background: radial-gradient(120% 90% at 30% 0%, rgba(255,255,255,.85), rgba(255,255,255,0) 55%), linear-gradient(180deg, #BFE0FF, #7FB6EE) !important;
+    border: 1px solid rgba(255,255,255,.6) !important;
+    box-shadow: inset 0 1px 0 #fff, inset 0 -2px 6px rgba(40,90,150,.35), 0 10px 28px -6px rgba(110,170,235,.6) !important;
+}
+.st-key-silverbot_bubble_toggle button:hover { box-shadow: inset 0 1px 0 #fff, 0 14px 34px -6px rgba(110,170,235,.8) !important; transform: translateY(-2px) scale(1.05); }
+.st-key-silverbot_bubble_panel {
+    background: linear-gradient(145deg, rgba(255,255,255,.14), rgba(255,255,255,.04) 46%, rgba(255,255,255,.08)), rgba(16,22,28,.82) !important;
+    border: 1px solid rgba(255,255,255,.24) !important; border-radius: 30px !important;
+    backdrop-filter: blur(20px) saturate(190%) !important;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.55), 0 22px 50px -14px rgba(0,0,0,.7) !important;
+}
+.st-key-silverbot_bubble_header { border-bottom: 1px solid rgba(255,255,255,.14) !important; }
+.silverbot-bubble-sub, .silverbot-bubble-typing { color: #B4C0CA; }
+.silverbot-bubble-user {
+    background: linear-gradient(180deg, #BFE0FF, #7FB6EE); border: 1px solid rgba(255,255,255,.55);
+    color: #07131F; border-radius: 20px 20px 6px 20px; box-shadow: inset 0 1px 0 #fff;
+}
+.silverbot-bubble-bot {
+    background: linear-gradient(145deg, rgba(255,255,255,.14), rgba(255,255,255,.05)); border: 1px solid rgba(255,255,255,.2);
+    border-radius: 20px 20px 20px 6px; color: #EEF3F6; box-shadow: inset 0 1px 0 rgba(255,255,255,.35);
+}
+.st-key-silverbot_bubble_inputrow { border-top: 1px solid rgba(255,255,255,.14) !important; }
+.st-key-silverbot_bubble_panel [data-baseweb="base-input"],
+.st-key-silverbot_bubble_panel [data-baseweb="input"] { background: rgba(8,12,16,.6) !important; border: 1px solid rgba(255,255,255,.24) !important; border-radius: 99px !important; }
+.st-key-silverbot_bubble_panel .stTextInput input { background: transparent !important; }
 </style>
 """
 

@@ -16,6 +16,7 @@ import streamlit as st
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from log_client import log_event
 from chat_bubble import render_chat_bubble
+from causal_map import render_causal_map, FACTOR_KEYS
 from dotenv import load_dotenv
 from graph.workflow import app
 from tools.market_tools import get_silver_price
@@ -158,6 +159,52 @@ html, body, [data-testid="stAppViewContainer"], [data-testid="stMain"] {
     border-radius: 0 10px 10px 0; padding: 12px 16px;
     font-size: 0.8rem; color: #B8C4CC; line-height: 1.75; margin-top: 8px;
 }
+</style>
+""", unsafe_allow_html=True)
+
+# liquid glass: translucent panels with bright rims over an ambient blue-grey background
+st.markdown("""
+<style>
+html, body, [data-testid="stAppViewContainer"], [data-testid="stMain"] {
+    background: radial-gradient(38% 34% at 16% 12%, rgba(112,170,235,.26), transparent 70%),
+                radial-gradient(34% 32% at 88% 10%, rgba(176,150,240,.18), transparent 70%),
+                radial-gradient(44% 40% at 72% 92%, rgba(150,205,235,.18), transparent 70%),
+                linear-gradient(180deg, #10161C, #0A0E12) !important;
+    color: #EEF3F6;
+}
+[data-testid="stSidebar"] {
+    background: rgba(16,22,28,.78) !important; backdrop-filter: blur(20px) saturate(180%);
+    border-right: 1px solid rgba(255,255,255,.16) !important;
+}
+.stButton > button {
+    border-radius: 99px !important; border: 1px solid rgba(255,255,255,.55) !important; color: #07131F !important; font-weight: 700 !important;
+    background: radial-gradient(120% 90% at 30% 0%, rgba(255,255,255,.85), rgba(255,255,255,0) 55%), linear-gradient(180deg, #BFE0FF, #7FB6EE) !important;
+    box-shadow: inset 0 1px 0 #fff, inset 0 -2px 6px rgba(40,90,150,.35), 0 10px 28px -6px rgba(110,170,235,.55) !important;
+    transition: transform .25s cubic-bezier(.3,1.5,.5,1) !important;
+}
+.stButton > button:hover { transform: translateY(-2px) scale(1.03); }
+.semi-card, .metric-card {
+    background: linear-gradient(145deg, rgba(255,255,255,.14), rgba(255,255,255,.04) 46%, rgba(255,255,255,.08)), rgba(16,22,28,.5);
+    border: 1px solid rgba(255,255,255,.22); border-radius: 26px;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.55), inset 0 -1px 0 rgba(255,255,255,.08), 0 18px 40px -14px rgba(0,0,0,.65);
+    backdrop-filter: blur(18px) saturate(180%);
+}
+.semi-card { padding: 16px 20px; }
+.card-key, .sec-label { color: #B4C0CA; }
+.card-val { color: #EEF3F6; }
+.sec-label::after { background: rgba(255,255,255,.14); }
+.bar-track { height: 8px; border-radius: 99px; background: rgba(255,255,255,.1); box-shadow: inset 0 1px 3px rgba(0,0,0,.5); }
+.bar-fill { border-radius: 99px; background: linear-gradient(90deg, #8CC8FF, #E4ECF2); }
+.toggle-switch { border-radius: 99px; box-shadow: inset 0 1px 0 rgba(255,255,255,.5); }
+.regime-card, .reasoning-card {
+    background: linear-gradient(145deg, rgba(255,255,255,.12), rgba(255,255,255,.04)), rgba(16,22,28,.5);
+    border: 1px solid rgba(255,255,255,.2); border-left: 1px solid rgba(255,255,255,.2); border-radius: 22px; color: #EEF3F6;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.45);
+}
+[data-baseweb="base-input"], [data-baseweb="input"], .stTextInput input {
+    background: rgba(16,22,28,.6) !important; border-radius: 99px !important; color: #EEF3F6 !important;
+}
+[data-baseweb="base-input"] { border: 1px solid rgba(255,255,255,.22) !important; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -435,6 +482,13 @@ else:
     """, unsafe_allow_html=True)
 
     st.markdown("<div style='padding:0 32px'>", unsafe_allow_html=True)
+
+    if scores:
+        st.markdown("<div class='sec-label'>Interactive causal map</div>", unsafe_allow_html=True)
+        try:
+            render_causal_map(scores, {k: smart_truncate(result.get(k, ""), 700) for k in FACTOR_KEYS})
+        except Exception as e:
+            st.caption(f"Causal map unavailable: {e}")
 
     st.markdown("<div class='sec-label'>Industrial</div>", unsafe_allow_html=True)
     for label, key in [("Mining Supply Growth", "mining_supply_growth"), ("Solar Panel Demand", "solar_panel_demand"), ("Industrial Production", "industrial_production")]:
