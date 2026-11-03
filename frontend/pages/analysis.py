@@ -17,6 +17,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from log_client import log_event
 from chat_bubble import render_chat_bubble
 from causal_map import render_causal_map, FACTOR_KEYS
+from robot3d import render_robot_3d
 from dotenv import load_dotenv
 from graph.workflow import app
 from tools.market_tools import get_silver_price
@@ -324,77 +325,7 @@ if not st.session_state.result:
     </div>
     """, unsafe_allow_html=True)
 
-    with open(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'static', 'robot_b64.txt'), 'r') as f:
-        ROBOT_IMG = f.read()
-
-    hero_robot_html = """
-    <style>
-    @keyframes rbounce{0%,100%{transform:translateY(0) rotate(0deg);}50%{transform:translateY(-10px) rotate(-3deg);}}
-    .hero-robot-img{animation:rbounce 3s ease-in-out infinite;filter:drop-shadow(0 0 24px rgba(184,196,204,0.4)) grayscale(1) brightness(1.3) contrast(0.9);}
-    .robot-wrap-outer{position:relative;display:inline-block;}
-    .robot-cloud{
-        position:absolute;top:-10px;right:-180px;
-        background:rgba(30,35,40,0.95);border:1px solid rgba(184,196,204,0.4);
-        border-radius:50px;padding:10px 20px;font-size:13px;font-weight:600;
-        color:#DCE4E8;white-space:nowrap;opacity:0;
-        animation:silver-cloud-cycle 37.5s ease-in-out infinite;
-    }
-    .robot-cloud::before{
-        content:'';position:absolute;width:14px;height:14px;border-radius:50%;
-        background:rgba(30,35,40,0.95);border:1px solid rgba(184,196,204,0.4);
-        left:10px;bottom:-18px;
-    }
-    .robot-cloud::after{
-        content:'';position:absolute;width:7px;height:7px;border-radius:50%;
-        background:rgba(30,35,40,0.95);border:1px solid rgba(184,196,204,0.4);
-        left:0px;bottom:-28px;
-    }
-    .robot-cloud:nth-child(2){animation-delay:0s;}
-    .robot-cloud:nth-child(3){animation-delay:2.5s;}
-    .robot-cloud:nth-child(4){animation-delay:5s;}
-    .robot-cloud:nth-child(5){animation-delay:7.5s;}
-    .robot-cloud:nth-child(6){animation-delay:10s;}
-    .robot-cloud:nth-child(7){animation-delay:12.5s;}
-    .robot-cloud:nth-child(8){animation-delay:15s;}
-    .robot-cloud:nth-child(9){animation-delay:17.5s;}
-    .robot-cloud:nth-child(10){animation-delay:20s;}
-    .robot-cloud:nth-child(11){animation-delay:22.5s;}
-    .robot-cloud:nth-child(12){animation-delay:25s;}
-    .robot-cloud:nth-child(13){animation-delay:27.5s;}
-    .robot-cloud:nth-child(14){animation-delay:30s;}
-    .robot-cloud:nth-child(15){animation-delay:32.5s;}
-    .robot-cloud:nth-child(16){animation-delay:35s;}
-    @keyframes silver-cloud-cycle{
-        0%{opacity:0;transform:translateY(6px);}
-        1%{opacity:1;transform:translateY(0);}
-        7%{opacity:1;transform:translateY(0);}
-        8%{opacity:0;transform:translateY(-6px);}
-        100%{opacity:0;}
-    }
-    </style>
-    <div style='display:flex;justify-content:center;margin-bottom:16px'>
-        <div class='robot-wrap-outer'>
-            <img class='hero-robot-img' src='data:image/png;base64,PLACEHOLDER' width='180' style='border-radius:24px;'/>
-            <div class='robot-cloud'>Silver: Dual-Regime signal ⚪</div>
-            <div class='robot-cloud'>Industrial demand tracked 🏭</div>
-            <div class='robot-cloud'>Gold-Silver ratio: live ⚖️</div>
-            <div class='robot-cloud'>Solar demand tracked ☀️</div>
-            <div class='robot-cloud'>Geopolitical risk: elevated 🌏</div>
-            <div class='robot-cloud'>USD Index: tracked live 💵</div>
-            <div class='robot-cloud'>Mining supply: monitored ⛏️</div>
-            <div class='robot-cloud'>Fed rate: FOMC tracked 🏦</div>
-            <div class='robot-cloud'>Inflation expectations: live 📊</div>
-            <div class='robot-cloud'>Real yields: tracked live 📉</div>
-            <div class='robot-cloud'>VIX: monitored in real-time 😨</div>
-            <div class='robot-cloud'>No hallucination scoring 🎯</div>
-            <div class='robot-cloud'>RAG-grounded analysis 📚</div>
-            <div class='robot-cloud'>Deterministic weighting applied ⚖️</div>
-            <div class='robot-cloud'>Divergence detection: live 🛡️</div>
-        </div>
-    </div>
-    """
-    hero_robot_html = hero_robot_html.replace("PLACEHOLDER", ROBOT_IMG)
-    st.markdown(hero_robot_html, unsafe_allow_html=True)
+    render_robot_3d(height=340)
 
     col_l, col_m, col_r = st.columns([1, 2, 1])
     with col_m:
