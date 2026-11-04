@@ -325,7 +325,7 @@ if not st.session_state.result:
     </div>
     """, unsafe_allow_html=True)
 
-    render_robot_3d(height=420)
+    render_robot_3d(height=340)
 
     col_l, col_m, col_r = st.columns([1, 2, 1])
     with col_m:
