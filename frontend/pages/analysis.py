@@ -37,6 +37,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from log_client import log_event
 from chat_bubble import render_chat_bubble
 from causal_map import render_causal_map, FACTOR_KEYS
+from extras import render_copy_link_button, render_download_pdf_button
 from dotenv import load_dotenv
 from graph.workflow import app
 from tools.market_tools import get_silver_price
@@ -486,7 +487,16 @@ if not st.session_state.result:
             st.rerun()
 
         except Exception as e:
-            st.error(f"Analysis failed: {str(e)}")
+            try:
+                st.toast(f"Analysis failed — {type(e).__name__}", icon="⚠️")
+            except Exception:
+                pass
+            st.error(
+                f"**Analysis failed.**  \n"
+                f"`{type(e).__name__}: {str(e)[:200]}`  \n\n"
+                "This usually clears up on retry. If it persists, upstream data APIs may be rate-limited — "
+                "wait ~30 seconds and try again."
+            )
 
 else:
     result = st.session_state.result
@@ -573,6 +583,23 @@ else:
 
     if p["reasoning"]:
         st.markdown(f"<div class='reasoning-card'>{p['reasoning']}</div>", unsafe_allow_html=True)
+
+    # Share & export actions
+    st.markdown("<div style='font-family:Space Grotesk,sans-serif;font-size:0.75rem;color:#8A96A0;margin:16px 0 4px;text-transform:uppercase;letter-spacing:0.08em'>Share &amp; Export</div>", unsafe_allow_html=True)
+    _share_col1, _share_col2 = st.columns([3, 1])
+    with _share_col1:
+        render_copy_link_button()
+    with _share_col2:
+        render_download_pdf_button(
+            regime=p.get("dominant_regime", "Neutral"),
+            strength=p.get("combined_strength", 0),
+            scores=scores,
+            reasoning=p.get("reasoning", ""),
+            bullish=p.get("bullish", []),
+            bearish=p.get("bearish", []),
+            confidence=p.get("confidence", "Medium"),
+            timestamp=uk_time_str(),
+        )
 
     st.markdown("<hr style='border-color:rgba(184,196,204,0.08);margin:24px 0'>", unsafe_allow_html=True)
     st.markdown("<div style='font-family:Space Grotesk,sans-serif;font-size:1rem;font-weight:600;color:#FFFFFF;margin-bottom:6px'>Ask a follow-up question</div>", unsafe_allow_html=True)
