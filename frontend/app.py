@@ -55,9 +55,14 @@ st.markdown("""
   setMeta('property', 'og:description', desc);
   setMeta('property', 'og:type', 'website');
   setMeta('property', 'og:url', 'https://silverbot-raj.streamlit.app/');
+  setMeta('property', 'og:image', 'https://raw.githubusercontent.com/khatikraj2653-collab/SilverBot/main/silverbot-demo.gif');
+  setMeta('property', 'og:image:width', '1200');
+  setMeta('property', 'og:image:height', '630');
+  setMeta('property', 'og:image:alt', 'SilverBot — AI Silver Dual-Regime Analyser');
   setMeta('name', 'twitter:card', 'summary_large_image');
   setMeta('name', 'twitter:title', "SilverBot — AI Silver Dual-Regime Analyser");
   setMeta('name', 'twitter:description', desc);
+  setMeta('name', 'twitter:image', 'https://raw.githubusercontent.com/khatikraj2653-collab/SilverBot/main/silverbot-demo.gif');
 
   let canonical = document.querySelector('link[rel="canonical"]');
   if (!canonical) { canonical = document.createElement('link'); canonical.setAttribute('rel', 'canonical'); document.head.appendChild(canonical); }
