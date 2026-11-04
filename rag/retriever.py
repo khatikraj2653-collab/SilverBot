@@ -1,18 +1,16 @@
 import os
+import streamlit as st
 from langchain_community.vectorstores import FAISS
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_text_splitters import MarkdownHeaderTextSplitter
 
-_vectorstore = None
-
 EMBEDDING_MODEL = "sentence-transformers/all-MiniLM-L6-v2"
 
 
+@st.cache_resource(show_spinner=False)
 def _build_vectorstore():
-    global _vectorstore
-    if _vectorstore is not None:
-        return _vectorstore
-
+    """Builds the FAISS vectorstore from the silver causal chain doc.
+    Cached across reruns so embeddings + index load only once per server."""
     doc_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "silver_causal_chain.md")
     with open(doc_path, "r", encoding="utf-8") as f:
         text = f.read()
@@ -22,8 +20,7 @@ def _build_vectorstore():
     chunks = splitter.split_text(text)
 
     embeddings = HuggingFaceEmbeddings(model_name=EMBEDDING_MODEL)
-    _vectorstore = FAISS.from_documents(chunks, embeddings)
-    return _vectorstore
+    return FAISS.from_documents(chunks, embeddings)
 
 
 def retrieve_factor_context(query: str, k: int = 2) -> str:
