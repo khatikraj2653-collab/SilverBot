@@ -41,9 +41,7 @@ _ERROR_MARKERS = (
     "Rate limited",
     "Try after a while",
     "Cannot specify",
-    "Not enough",
     "out-of-bounds",
-    "did not return",
     "all sources failed",
     "N/A for ",
     "no usable content",
@@ -61,9 +59,8 @@ def _looks_like_error(value: str) -> bool:
         return True
     na_count = value.count("N/A") + value.count("n/a")
     digit_count = sum(c.isdigit() for c in value)
-    if na_count >= 2 and digit_count < 4:
-        return True
-    if na_count >= 1 and digit_count < 2 and len(value) < 60:
+    # Require OVERWHELMINGLY placeholders before flagging as error.
+    if na_count >= 3 and digit_count < 2:
         return True
     return False
 

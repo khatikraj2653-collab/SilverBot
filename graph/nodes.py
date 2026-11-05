@@ -205,14 +205,21 @@ def generate_prediction(state: SilverState) -> dict:
         "GEOPOLITICAL_RISK_SCORE": "geopolitical_risk",
         "INFLATION_EXPECTATIONS_SCORE": "inflation_expectations",
     }
+    import re
     for line in scoring_response.content.split("\n"):
-        line = line.strip()
+        cleaned = re.sub(r'^[\s\-\*\d\.\`]*\**\s*', '', line).strip().rstrip('*').strip()
         for score_key, factor_key in score_map.items():
-            if line.startswith(score_key + ":"):
-                try:
-                    scores[factor_key] = int(line.split(":")[-1].strip())
-                except:
+            if cleaned.startswith(score_key + ":"):
+                tail = cleaned.split(":", 1)[-1]
+                m = re.search(r'-?\d+', tail)
+                if m:
+                    try:
+                        scores[factor_key] = max(-10, min(10, int(m.group(0))))
+                    except (ValueError, TypeError):
+                        scores[factor_key] = 0
+                else:
                     scores[factor_key] = 0
+                break
     for key in FACTOR_WEIGHTS:
         if key not in scores:
             scores[key] = 0
