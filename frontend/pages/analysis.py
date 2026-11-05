@@ -56,6 +56,8 @@ from log_client import log_event
 from chat_bubble import render_chat_bubble
 from causal_map import render_causal_map, FACTOR_KEYS
 from extras import render_copy_link_button, render_download_pdf_button
+from keyboard import bind_ctrl_enter_submit
+bind_ctrl_enter_submit()
 from dotenv import load_dotenv
 from graph.workflow import app
 from tools.market_tools import get_silver_price
