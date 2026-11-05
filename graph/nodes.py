@@ -14,6 +14,12 @@ llm = ChatOpenAI(
     temperature=0
 )
 
+llm_retry = ChatOpenAI(
+    model="gpt-4o",
+    api_key=os.getenv("OPENAI_API_KEY"),
+    temperature=0.4
+)
+
 FACTOR_WEIGHTS = {
     "rate_environment": 14,
     "gold_silver_ratio": 13,
@@ -249,15 +255,15 @@ def generate_prediction(state: SilverState) -> dict:
             break
         offender_list = "\n".join(f"- {k}: '{v}'" for k, v in zero_offenders)
         complaint = (
-            f"PROBLEM: Your previous response scored {len(zero_offenders)} factors as 0 "
-            f"despite them having REAL DATA (none match the missing-data exception). "
-            f"This violates the mandatory rule.\n\n"
-            f"These factors must each get a NON-ZERO integer between -10 and +10:\n"
+            f"YOUR PREVIOUS RESPONSE IS REJECTED. You scored {len(zero_offenders)} factors as 0 "
+            f"despite them having REAL DATA. 0 is ONLY for missing data — these all have real "
+            f"data and MUST be scored non-zero.\n\n"
+            f"The following scores MUST be changed to a non-zero integer -10 to +10:\n"
             f"{offender_list}\n\n"
-            f"Re-output ALL 9 scores in the same format. Every factor above MUST be non-zero. "
-            f"Pick a direction and magnitude based on the Data and Context."
+            f"Even mild signals deserve ±1 or ±2. 0 means 'no signal exists' — these all have signal.\n\n"
+            f"Re-output ALL 9 scores in the exact same format. Every factor above MUST be non-zero."
         )
-        retry_response = llm.invoke(
+        retry_response = llm_retry.invoke(
             rendered_messages
             + [AIMessage(content=scoring_response.content), HumanMessage(content=complaint)]
         )
