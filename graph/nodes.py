@@ -188,13 +188,74 @@ Answer clearly and concisely in 2-4 sentences, using the context above where rel
 """)
 
 
+def _extract_number(s):
+    import re
+    if not isinstance(s, str):
+        return None
+    m = re.search(r'-?\d+\.?\d*', s)
+    if not m:
+        return None
+    try:
+        return float(m.group(0))
+    except (ValueError, TypeError):
+        return None
+
+
+def _suggest_silver_score(factor_key, raw):
+    v = _extract_number(raw)
+    if v is None:
+        return None
+    if factor_key == "rate_environment":
+        # Rate Environment extracts Fed Rate first. Higher rates = silver bearish.
+        if v < 2.5: return 5
+        if v < 3.5: return 3
+        if v < 4.5: return -2
+        if v < 5: return -5
+        return -7
+    if factor_key == "gold_silver_ratio":
+        # High ratio = silver undervalued relative to gold = bullish
+        if v < 50: return -4
+        if v < 65: return -1
+        if v < 80: return 2
+        if v < 95: return 5
+        return 7
+    if factor_key == "usd_index":
+        # Stronger USD = silver bearish
+        if v < 95: return 4
+        if v < 100: return 2
+        if v < 102: return -2
+        if v < 105: return -4
+        return -6
+    if factor_key == "inflation_expectations":
+        if v < 2: return -2
+        if v < 2.3: return -1
+        if v < 2.6: return 2
+        if v < 3: return 4
+        return 5
+    return None
+
+
+HINTABLE_FACTORS = {"rate_environment", "gold_silver_ratio", "usd_index", "inflation_expectations"}
+
+
 def generate_prediction(state: SilverState) -> dict:
+    from tools.cache_utils import _looks_like_error
     rag_context = {
         key: retrieve_factor_context(query)
         for key, query in FACTOR_RAG_QUERIES.items()
     }
 
-    prompt_inputs = {key: state.get(key, "N/A") for key in FACTOR_WEIGHTS}
+    def _with_hint(factor_key):
+        raw = state.get(factor_key, "N/A")
+        if factor_key not in HINTABLE_FACTORS or _looks_like_error(raw):
+            return raw
+        suggested = _suggest_silver_score(factor_key, raw)
+        if suggested is None:
+            return raw
+        sign = "+" if suggested >= 0 else ""
+        return f"{raw}  [PYTHON HINT: suggested score = {sign}{suggested} based on band table — accept if you agree, override if you disagree]"
+
+    prompt_inputs = {key: _with_hint(key) for key in FACTOR_WEIGHTS}
     for key in FACTOR_WEIGHTS:
         prompt_inputs[f"{key}_context"] = rag_context.get(key, "N/A")
 
