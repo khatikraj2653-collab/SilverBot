@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 load_dotenv(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), '.env'))
 
 from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.messages import HumanMessage, AIMessage
 from langchain_openai import ChatOpenAI
 from graph.state import SilverState
 from rag.retriever import retrieve_factor_context
@@ -191,9 +192,9 @@ def generate_prediction(state: SilverState) -> dict:
     for key in FACTOR_WEIGHTS:
         prompt_inputs[f"{key}_context"] = rag_context.get(key, "N/A")
 
-    scoring_response = (scoring_prompt | llm).invoke(prompt_inputs)
+    rendered_messages = scoring_prompt.format_messages(**prompt_inputs)
+    scoring_response = llm.invoke(rendered_messages)
 
-    scores = {}
     score_map = {
         "RATE_ENVIRONMENT_SCORE": "rate_environment",
         "GOLD_SILVER_RATIO_SCORE": "gold_silver_ratio",
@@ -205,31 +206,69 @@ def generate_prediction(state: SilverState) -> dict:
         "GEOPOLITICAL_RISK_SCORE": "geopolitical_risk",
         "INFLATION_EXPECTATIONS_SCORE": "inflation_expectations",
     }
-    import re
-    for line in scoring_response.content.split("\n"):
-        cleaned = re.sub(r'^[\s\-\*\d\.\`]*\**\s*', '', line).strip().rstrip('*').strip()
-        for score_key, factor_key in score_map.items():
-            if cleaned.startswith(score_key + ":"):
-                tail = cleaned.split(":", 1)[-1]
-                m = re.search(r'-?\d+', tail)
-                if m:
-                    try:
-                        scores[factor_key] = max(-10, min(10, int(m.group(0))))
-                    except (ValueError, TypeError):
-                        scores[factor_key] = 0
-                else:
-                    scores[factor_key] = 0
-                break
+
+    def _parse(raw):
+        import re
+        out = {}
+        for line in raw.split("\n"):
+            cleaned = re.sub(r'^[\s\-\*\d\.\`]*\**\s*', '', line).strip().rstrip('*').strip()
+            for score_key, factor_key in score_map.items():
+                if cleaned.startswith(score_key + ":"):
+                    tail = cleaned.split(":", 1)[-1]
+                    m = re.search(r'-?\d+', tail)
+                    if m:
+                        try:
+                            out[factor_key] = max(-10, min(10, int(m.group(0))))
+                        except (ValueError, TypeError):
+                            out[factor_key] = 0
+                    else:
+                        out[factor_key] = 0
+                    break
+        return out
+
+    scores = _parse(scoring_response.content)
     for key in FACTOR_WEIGHTS:
         if key not in scores:
             scores[key] = 0
 
-    # Deterministic guardrail: force Neutral (0) for any factor whose raw
-    # data is an error/missing marker, regardless of what the LLM returned.
     from tools.cache_utils import _looks_like_error
     for key in FACTOR_WEIGHTS:
         if _looks_like_error(str(state.get(key, ""))):
             scores[key] = 0
+
+    # LLM self-correction loop: if the LLM picked 0 for factors with real
+    # data, hand it back its own response with the offender list and ask
+    # to re-score. Pure LLM-only, max 2 retries.
+    for attempt in range(2):
+        zero_offenders = [
+            (k, str(state.get(k, ""))[:150])
+            for k in score_map.values()
+            if scores.get(k, 0) == 0 and not _looks_like_error(str(state.get(k, "")))
+        ]
+        if not zero_offenders:
+            break
+        offender_list = "\n".join(f"- {k}: '{v}'" for k, v in zero_offenders)
+        complaint = (
+            f"PROBLEM: Your previous response scored {len(zero_offenders)} factors as 0 "
+            f"despite them having REAL DATA (none match the missing-data exception). "
+            f"This violates the mandatory rule.\n\n"
+            f"These factors must each get a NON-ZERO integer between -10 and +10:\n"
+            f"{offender_list}\n\n"
+            f"Re-output ALL 9 scores in the same format. Every factor above MUST be non-zero. "
+            f"Pick a direction and magnitude based on the Data and Context."
+        )
+        retry_response = llm.invoke(
+            rendered_messages
+            + [AIMessage(content=scoring_response.content), HumanMessage(content=complaint)]
+        )
+        scoring_response = retry_response
+        scores = _parse(retry_response.content)
+        for key in FACTOR_WEIGHTS:
+            if key not in scores:
+                scores[key] = 0
+        for key in FACTOR_WEIGHTS:
+            if _looks_like_error(str(state.get(key, ""))):
+                scores[key] = 0
 
     strength = calculate_strength(scores)
     status = "ON" if strength >= 50 else "OFF"
