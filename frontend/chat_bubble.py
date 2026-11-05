@@ -1,236 +1,40 @@
 """
-Floating 'Ask SilverBot' chat bubble — reuses the existing
-answer_followup_question() logic (same grounding, identity, live silver
-price, refusal rules), just presented as a persistent floating widget
-instead of an inline box. Usable from both the landing and analysis pages.
+Thin wrapper around the shared chat_bubble_core. Configures theme and
+system prompt for SilverBot.
 """
-import os
-import streamlit as st
-from langchain_openai import ChatOpenAI
-from log_client import log_event
+from chat_bubble_core import BubbleConfig, BubbleTheme, render_bubble
 
-_SILVERBOT_SYSTEM = """You are SilverBot, a dual-regime silver analyser created by Raj Tejpal Khatik, an MSc Applied AI student at the University of Warwick.
-Answer questions about silver, industrial metals, precious metals, macro economics, inflation, energy transition, and related markets.
-If asked who you are or who created you, say: "I am SilverBot - a dual-regime silver analyser. Created by Raj Tejpal Khatik at the University of Warwick."
-Only refuse questions completely unrelated to finance, markets, or economics."""
+_SILVERBOT_SYSTEM = (
+    "You are SilverBot, a dual-regime silver analyser created by Raj Tejpal "
+    "Khatik, an MSc Applied AI student at the University of Warwick.\n"
+    "Answer questions about silver, industrial metals, precious metals, macro "
+    "economics, inflation, energy transition, and related markets.\n"
+    'If asked who you are or who created you, say: "I am SilverBot - a '
+    'dual-regime silver analyser. Created by Raj Tejpal Khatik at the '
+    'University of Warwick."\n'
+    "Only refuse questions completely unrelated to finance, markets, or economics."
+)
 
-def _get_llm():
-    return ChatOpenAI(model="gpt-4o-mini", api_key=os.getenv("OPENAI_API_KEY"), temperature=0)
+_THEME = BubbleTheme(
+    slug="silverbot",
+    accent="#C8D4DC",
+    accent_hover="#DCE4E8",
+    text_primary="#F5F7F9",
+    text_secondary="#8A96A0",
+    bg_panel="#101214",
+    bg_input="#15191D",
+    bubble_icon_color="#14171A",
+    hair="rgba(220,228,232,.15)",
+)
 
-BUBBLE_CSS = """
-<style>
-.st-key-silverbot_bubble_toggle {
-    position: fixed !important;
-    bottom: 84px !important;
-    right: 24px !important;
-    z-index: 999999 !important;
-    width: 58px !important;
-}
-.st-key-silverbot_bubble_toggle button {
-    width: 58px !important;
-    height: 58px !important;
-    border-radius: 50% !important;
-    background: linear-gradient(135deg, #6B7A88, #C8D4DC) !important;
-    color: #14171A !important;
-    font-size: 26px !important;
-    line-height: 1 !important;
-    box-shadow: 0 4px 22px rgba(184,196,204,0.5) !important;
-    border: none !important;
-    padding: 0 !important;
-}
-.st-key-silverbot_bubble_toggle button:hover {
-    box-shadow: 0 6px 30px rgba(200,212,220,0.65) !important;
-    transform: translateY(-2px);
-}
-.st-key-silverbot_bubble_panel {
-    position: fixed !important;
-    bottom: 154px !important;
-    right: 24px !important;
-    width: 380px !important;
-    max-width: calc(100vw - 32px) !important;
-    max-height: calc(100vh - 140px) !important;
-    background: #101214 !important;
-    border: 1px solid rgba(184,196,204,0.25) !important;
-    border-radius: 16px !important;
-    padding: 0 !important;
-    z-index: 999998 !important;
-    box-shadow: 0 16px 48px rgba(0,0,0,0.55) !important;
-    display: flex !important;
-    flex-direction: column !important;
-    overflow: hidden !important;
-}
-.st-key-silverbot_bubble_header {
-    padding: 14px 18px 10px !important;
-    border-bottom: 1px solid rgba(184,196,204,0.15) !important;
-    flex-shrink: 0 !important;
-}
-.silverbot-bubble-title {
-    font-family: 'Space Grotesk', sans-serif; font-size: 0.95rem; font-weight: 700;
-    color: #FFFFFF; margin-bottom: 2px;
-}
-.silverbot-bubble-sub {
-    font-size: 0.68rem; color: #8A96A0;
-}
-.st-key-silverbot_bubble_messages {
-    flex: 1 1 auto !important;
-    overflow-y: auto !important;
-    padding: 12px 16px !important;
-    min-height: 120px !important;
-    max-height: 360px !important;
-}
-.silverbot-bubble-messages-inner {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-.silverbot-bubble-user {
-    background: linear-gradient(135deg,rgba(107,122,136,0.35),rgba(200,212,220,0.18));
-    border: 1px solid rgba(184,196,204,0.3);
-    border-radius: 14px 14px 4px 14px;
-    padding: 9px 12px;
-    font-size: 0.8rem; color: #FFFFFF; line-height: 1.55;
-    max-width: 84%; align-self: flex-end;
-}
-.silverbot-bubble-bot {
-    background: rgba(40,45,50,0.75);
-    border: 1px solid rgba(140,150,160,0.2);
-    border-radius: 14px 14px 14px 4px;
-    padding: 10px 12px;
-    font-size: 0.8rem; color: #DCE4E8; line-height: 1.55;
-    max-width: 88%; align-self: flex-start;
-}
-.silverbot-bubble-typing {
-    font-size: 0.75rem; color: #8A96A0; align-self: flex-start;
-    padding: 2px 4px;
-}
-.st-key-silverbot_bubble_inputrow {
-    padding: 10px 14px 14px !important;
-    border-top: 1px solid rgba(184,196,204,0.15) !important;
-    flex-shrink: 0 !important;
-}
-.st-key-silverbot_bubble_panel [data-baseweb="base-input"],
-.st-key-silverbot_bubble_panel [data-baseweb="input"] {
-    background: #1A1D20 !important;
-    border: 1px solid rgba(184,196,204,0.3) !important;
-    border-radius: 8px !important;
-}
-.st-key-silverbot_bubble_panel .stTextInput input {
-    background: #1A1D20 !important;
-    color: #FFFFFF !important;
-    font-size: 0.82rem !important;
-    -webkit-text-fill-color: #FFFFFF !important;
-}
-.st-key-silverbot_bubble_panel .stTextInput input::placeholder {
-    color: #8A96A0 !important;
-    opacity: 1 !important;
-}
-/* liquid glass */
-.st-key-silverbot_bubble_toggle button {
-    background: radial-gradient(120% 90% at 30% 0%, rgba(255,255,255,.85), rgba(255,255,255,0) 55%), linear-gradient(180deg, #BFE0FF, #7FB6EE) !important;
-    border: 1px solid rgba(255,255,255,.6) !important;
-    box-shadow: inset 0 1px 0 #fff, inset 0 -2px 6px rgba(40,90,150,.35), 0 10px 28px -6px rgba(110,170,235,.6) !important;
-}
-.st-key-silverbot_bubble_toggle button:hover { box-shadow: inset 0 1px 0 #fff, 0 14px 34px -6px rgba(110,170,235,.8) !important; transform: translateY(-2px) scale(1.05); }
-.st-key-silverbot_bubble_panel {
-    background: linear-gradient(145deg, rgba(255,255,255,.14), rgba(255,255,255,.04) 46%, rgba(255,255,255,.08)), rgba(16,22,28,.82) !important;
-    border: 1px solid rgba(255,255,255,.24) !important; border-radius: 30px !important;
-    backdrop-filter: blur(20px) saturate(190%) !important;
-    box-shadow: inset 0 1px 0 rgba(255,255,255,.55), 0 22px 50px -14px rgba(0,0,0,.7) !important;
-}
-.st-key-silverbot_bubble_header { border-bottom: 1px solid rgba(255,255,255,.14) !important; }
-.silverbot-bubble-sub, .silverbot-bubble-typing { color: #B4C0CA; }
-.silverbot-bubble-user {
-    background: linear-gradient(180deg, #BFE0FF, #7FB6EE); border: 1px solid rgba(255,255,255,.55);
-    color: #07131F; border-radius: 20px 20px 6px 20px; box-shadow: inset 0 1px 0 #fff;
-}
-.silverbot-bubble-bot {
-    background: linear-gradient(145deg, rgba(255,255,255,.14), rgba(255,255,255,.05)); border: 1px solid rgba(255,255,255,.2);
-    border-radius: 20px 20px 20px 6px; color: #EEF3F6; box-shadow: inset 0 1px 0 rgba(255,255,255,.35);
-}
-.st-key-silverbot_bubble_inputrow { border-top: 1px solid rgba(255,255,255,.14) !important; }
-.st-key-silverbot_bubble_panel [data-baseweb="base-input"],
-.st-key-silverbot_bubble_panel [data-baseweb="input"] { background: rgba(8,12,16,.6) !important; border: 1px solid rgba(255,255,255,.24) !important; border-radius: 99px !important; }
-.st-key-silverbot_bubble_panel .stTextInput input { background: transparent !important; }
-</style>
-"""
+_CFG = BubbleConfig(
+    theme=_THEME,
+    title="Ask SilverBot",
+    subtitle="Silver market Q&amp;A - won't answer off-topic questions",
+    placeholder="Ask about silver, industrial metals...",
+    system_prompt=_SILVERBOT_SYSTEM,
+)
 
 
 def render_chat_bubble():
-    if "bubble_open" not in st.session_state:
-        st.session_state.bubble_open = False
-    if "bubble_history" not in st.session_state:
-        st.session_state.bubble_history = []
-    if "bubble_input_counter" not in st.session_state:
-        st.session_state.bubble_input_counter = 0
-    if "bubble_thinking" not in st.session_state:
-        st.session_state.bubble_thinking = False
-
-    st.markdown(BUBBLE_CSS, unsafe_allow_html=True)
-
-    with st.container(key="silverbot_bubble_toggle"):
-        icon = "×" if st.session_state.bubble_open else "💬"
-        st.button(icon, key="silverbot_bubble_toggle_btn",
-                                    on_click=lambda: st.session_state.update({"bubble_open": not st.session_state.bubble_open}))
-
-    if not st.session_state.bubble_open:
-        return
-
-    with st.container(key="silverbot_bubble_panel"):
-        with st.container(key="silverbot_bubble_header"):
-            st.markdown(
-                "<div class='silverbot-bubble-title'>Ask SilverBot</div>"
-                "<div class='silverbot-bubble-sub'>Silver market Q&amp;A - won't answer off-topic questions</div>",
-                unsafe_allow_html=True,
-            )
-
-        with st.container(key="silverbot_bubble_messages"):
-            parts = ["<div class='silverbot-bubble-messages-inner'>"]
-            for msg in st.session_state.bubble_history:
-                css_class = "silverbot-bubble-user" if msg["role"] == "user" else "silverbot-bubble-bot"
-                parts.append(f"<div class='{css_class}'>{msg['content']}</div>")
-            if st.session_state.bubble_thinking:
-                parts.append("<div class='silverbot-bubble-typing'>Thinking...</div>")
-            parts.append("</div>")
-            st.markdown("".join(parts), unsafe_allow_html=True)
-
-        with st.container(key="silverbot_bubble_inputrow"):
-            q_col, btn_col = st.columns([5, 1])
-            with q_col:
-                question = st.text_input(
-                    "", placeholder="Ask about silver, industrial demand...",
-                    label_visibility="collapsed",
-                    key=f"bubble_input_{st.session_state.bubble_input_counter}",
-                    disabled=st.session_state.bubble_thinking,
-                )
-            with btn_col:
-                ask = st.button(
-                    "Ask", use_container_width=True, key="silverbot_bubble_ask_btn",
-                    disabled=st.session_state.bubble_thinking,
-                )
-
-            if ask and question and not st.session_state.bubble_thinking:
-                st.session_state.bubble_history.append({"role": "user", "content": question})
-                st.session_state.bubble_thinking = True
-                st.session_state.bubble_input_counter += 1
-                st.rerun()
-
-    if st.session_state.bubble_thinking:
-        last_question = st.session_state.bubble_history[-1]["content"]
-        try:
-            from langchain_core.messages import SystemMessage, HumanMessage, AIMessage
-            llm = _get_llm()
-            messages = [SystemMessage(content=_SILVERBOT_SYSTEM)]
-            for prev in st.session_state.bubble_history[-7:-1]:
-                if prev["role"] == "user":
-                    messages.append(HumanMessage(content=prev["content"]))
-                else:
-                    messages.append(AIMessage(content=prev["content"]))
-            messages.append(HumanMessage(content=last_question))
-            reply = llm.invoke(messages).content
-        except Exception:
-            reply = "Sorry, I couldn't process that right now. Please try again shortly."
-
-        st.session_state.bubble_history.append({"role": "assistant", "content": reply})
-        log_event("chat", question=last_question, reply=reply)
-        st.session_state.bubble_thinking = False
-        st.rerun()
+    render_bubble(_CFG)
