@@ -7,6 +7,15 @@ from graph.state import SilverState
 from graph.nodes import generate_prediction
 from graph.subgraphs import build_industrial_subgraph, build_monetary_subgraph
 
+# Wipe any stale error rows cached under the old behaviour on first import.
+try:
+    from tools.cache_utils import purge_error_cache
+    _purged = purge_error_cache()
+    if _purged:
+        print(f"[cache] purged {_purged} stale error rows", flush=True)
+except Exception as _e:
+    print(f"[cache] purge skipped: {_e}", flush=True)
+
 
 @st.cache_resource(show_spinner=False)
 def build_graph():

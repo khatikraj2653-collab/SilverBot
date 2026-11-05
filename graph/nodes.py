@@ -122,6 +122,8 @@ Context: {geopolitical_risk_context}
 Inflation Expectations: {inflation_expectations}
 Context: {inflation_expectations_context}
 
+CRITICAL RULE — READ CAREFULLY: For any factor where the data field explicitly says "Data unavailable", "N/A", "Not enough", "Too Many Requests", "None", or similar (no usable current value returned), you MUST output a score of exactly 0 for that factor, with NO exceptions. This overrides everything else, including the historical/background Context provided for that factor. Do NOT use the Context section to infer a score when the Data field is missing — the Context is only general background information, not current data, and must be ignored entirely for scoring purposes when current data is missing. A missing data point is always Neutral (0), regardless of what the general context suggests about that factor's typical relationship with silver.
+
 Return ONLY this exact format, no other text:
 RATE_ENVIRONMENT_SCORE: [integer -10 to 10]
 GOLD_SILVER_RATIO_SCORE: [integer -10 to 10]

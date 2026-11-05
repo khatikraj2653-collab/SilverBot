@@ -32,6 +32,21 @@ def _init_cache_table():
 _init_cache_table()
 
 
+# Strings that indicate a failed fetch — we skip caching these so a transient
+# rate limit or API hiccup doesn't poison the cache for hours.
+_ERROR_MARKERS = (
+    "Data unavailable", "Too Many Requests", "Rate limited", "Cannot specify",
+    "N/A for ", "Not enough", "out-of-bounds", "Data temporarily unavailable",
+    "did not return", "None (Gold: $None",
+)
+
+
+def _looks_like_error(value: str) -> bool:
+    if not isinstance(value, str) or not value:
+        return True
+    return any(m in value for m in _ERROR_MARKERS)
+
+
 def cached_tool(ttl_seconds):
     """
     Decorator for caching a tool function's result for ttl_seconds, backed
@@ -39,8 +54,8 @@ def cached_tool(ttl_seconds):
     @tool (i.e. closer to the function) so it wraps the raw function before
     LangChain's @tool wraps it.
 
-    Each call opens and closes its own SQLite connection (not shared across
-    threads), so this is safe to use inside threaded/async contexts.
+    Error responses are NOT cached — previously a transient rate-limit error
+    could poison the cache and users kept seeing the same stale error.
     """
     def decorator(func):
         @functools.wraps(func)
@@ -56,11 +71,18 @@ def cached_tool(ttl_seconds):
             row = cursor.fetchone()
             now = time.time()
 
-            if row and (now - row[1]) < ttl_seconds:
+            # Serve from cache ONLY if the cached value isn't an error string
+            if row and (now - row[1]) < ttl_seconds and not _looks_like_error(row[0]):
                 conn.close()
                 return row[0]
 
             result = func(*args, **kwargs)
+
+            if _looks_like_error(result):
+                conn.execute("DELETE FROM factor_cache WHERE cache_key = ?", (cache_key,))
+                conn.commit()
+                conn.close()
+                return result
 
             conn.execute(
                 "INSERT OR REPLACE INTO factor_cache (cache_key, value, cached_at) VALUES (?, ?, ?)",
@@ -72,6 +94,21 @@ def cached_tool(ttl_seconds):
 
         return wrapper
     return decorator
+
+
+def purge_error_cache():
+    """Wipe any cached error rows left over from before error-skipping existed."""
+    try:
+        conn = sqlite3.connect(_get_cache_db_path())
+        cursor = conn.execute("SELECT cache_key, value FROM factor_cache")
+        bad = [row[0] for row in cursor.fetchall() if _looks_like_error(row[1])]
+        for key in bad:
+            conn.execute("DELETE FROM factor_cache WHERE cache_key = ?", (key,))
+        conn.commit()
+        conn.close()
+        return len(bad)
+    except Exception:
+        return 0
 
 
 TTL_GOLD_SILVER = 7200     # 2 hr
