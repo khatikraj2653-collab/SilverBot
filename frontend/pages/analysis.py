@@ -14,25 +14,43 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(
 
 import streamlit as st
 
-# Full-screen loader shown IMMEDIATELY so users don't see a blank page while
-# the heavy imports below (LangGraph, FAISS, HuggingFace embeddings,
-# yfinance) run on first visit. Cleared at the end of the script.
+# Loader logic: full-screen overlay on FIRST visit to hide heavy cold-start
+# imports; tiny inline spinner on subsequent reruns (button clicks, etc.) so
+# clicking Run Analysis never produces a full-screen blackout that hides
+# the actual results while the analysis is running.
 _loading_placeholder = st.empty()
-_loading_placeholder.markdown(
-    """
-    <div style="position:fixed;inset:0;display:flex;align-items:center;justify-content:center;
-                background:#171B21;z-index:999999;flex-direction:column;gap:14px;">
-      <div style="width:44px;height:44px;border:3px solid rgba(192,192,192,.2);
-                  border-top-color:#C0C0C0;border-radius:50%;
-                  animation:sb-spin 0.9s linear infinite;"></div>
-      <div style="color:#C7D1DF;font-family:Inter,sans-serif;font-size:14px;">
-        Loading SilverBot analysis engine…
-      </div>
-      <style>@keyframes sb-spin{to{transform:rotate(360deg)}}</style>
-    </div>
-    """,
-    unsafe_allow_html=True,
-)
+_sb_first_visit = "_sb_analysis_loader_shown" not in st.session_state
+if _sb_first_visit:
+    st.session_state._sb_analysis_loader_shown = True
+    _loading_placeholder.markdown(
+        """
+        <div style="position:fixed;inset:0;display:flex;align-items:center;justify-content:center;
+                    background:#171B21;z-index:999999;flex-direction:column;gap:14px;">
+          <div style="width:44px;height:44px;border:3px solid rgba(192,192,192,.2);
+                      border-top-color:#C0C0C0;border-radius:50%;
+                      animation:sb-spin 0.9s linear infinite;"></div>
+          <div style="color:#C7D1DF;font-family:Inter,sans-serif;font-size:14px;">
+            Loading SilverBot analysis engine…
+          </div>
+          <style>@keyframes sb-spin{to{transform:rotate(360deg)}}</style>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+else:
+    _loading_placeholder.markdown(
+        """
+        <div style="display:flex;align-items:center;gap:10px;padding:6px 14px;margin:4px 0;
+                    color:#8A96A0;font-family:Inter,sans-serif;font-size:12.5px;">
+          <div style="width:14px;height:14px;border:2px solid rgba(192,192,192,.25);
+                      border-top-color:#C0C0C0;border-radius:50%;
+                      animation:sb-spin-sm 0.9s linear infinite;"></div>
+          <span>Running…</span>
+          <style>@keyframes sb-spin-sm{to{transform:rotate(360deg)}}</style>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from log_client import log_event
 from chat_bubble import render_chat_bubble
