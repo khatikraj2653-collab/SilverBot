@@ -157,7 +157,8 @@ html, body, [data-testid="stAppViewContainer"], [data-testid="stMain"] {
     background: #14171A !important;
     font-family: 'Inter', sans-serif !important;
 }
-#MainMenu, footer, header { visibility: hidden; }
+#MainMenu, footer { visibility: hidden; }
+header, [data-testid="stHeader"] { display: none !important; }
 [data-testid="stToolbar"] { display: none; }
 .block-container { padding: 0 !important; padding-bottom: 60px !important; max-width: 100% !important; }
 
