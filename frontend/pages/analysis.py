@@ -415,6 +415,8 @@ if not st.session_state.result:
     @keyframes rbounce{0%,100%{transform:translateY(0) rotate(0deg);}50%{transform:translateY(-10px) rotate(-3deg);}}
     .hero-robot-img{animation:rbounce 3s ease-in-out infinite;filter:drop-shadow(0 0 24px rgba(184,196,204,0.4)) grayscale(1) brightness(1.3) contrast(0.9);}
     .robot-wrap-outer{position:relative;display:inline-block;}
+    .orbit-avatar{width:220px;height:220px;display:inline-block;margin-bottom:16px;filter:drop-shadow(0 0 32px rgba(140,200,255,0.5));}
+    .orbit-avatar svg{width:100%;height:100%;display:block;}
     .robot-cloud{
         position:absolute;top:-10px;right:-180px;
         background:rgba(30,35,40,0.95);border:1px solid rgba(184,196,204,0.4);
@@ -457,7 +459,47 @@ if not st.session_state.result:
     </style>
     <div style='display:flex;justify-content:center;margin-bottom:16px'>
         <div class='robot-wrap-outer'>
-            <img class='hero-robot-img' src='data:image/png;base64,PLACEHOLDER' width='180' style='border-radius:24px;'/>
+            <div class='orbit-avatar' aria-label='SilverBot avatar'>
+              <svg viewBox='-100 -100 200 200' xmlns='http://www.w3.org/2000/svg'>
+                <defs>
+                  <radialGradient id='silverCoreGlow'>
+                    <stop offset='0%' stop-color='#FFFFFF' stop-opacity='1'/>
+                    <stop offset='55%' stop-color='#8CC8FF' stop-opacity='0.75'/>
+                    <stop offset='100%' stop-color='#8CC8FF' stop-opacity='0'/>
+                  </radialGradient>
+                </defs>
+                <!-- outer ring (Monetary: silver) -->
+                <circle r='82' fill='none' stroke='#E4ECF2' stroke-opacity='0.3' stroke-width='1'/>
+                <g>
+                  <animateTransform attributeName='transform' type='rotate' from='0 0 0' to='360 0 0' dur='18s' repeatCount='indefinite'/>
+                  <circle cx='82' cy='0' r='5.5' fill='#E4ECF2'/>
+                  <circle cx='0' cy='82' r='4' fill='#E4ECF2' opacity='0.75'/>
+                  <circle cx='-82' cy='0' r='5.5' fill='#E4ECF2'/>
+                  <circle cx='0' cy='-82' r='4' fill='#E4ECF2' opacity='0.75'/>
+                </g>
+                <!-- mid ring (Industrial: blue) -->
+                <circle r='56' fill='none' stroke='#8CC8FF' stroke-opacity='0.35' stroke-width='1'/>
+                <g>
+                  <animateTransform attributeName='transform' type='rotate' from='0 0 0' to='-360 0 0' dur='12s' repeatCount='indefinite'/>
+                  <circle cx='56' cy='0' r='4' fill='#8CC8FF'/>
+                  <circle cx='-56' cy='0' r='4' fill='#8CC8FF'/>
+                  <circle cx='0' cy='-56' r='3.5' fill='#8CC8FF' opacity='0.75'/>
+                </g>
+                <!-- inner ring (chrome highlight) -->
+                <circle r='34' fill='none' stroke='#B8D4F0' stroke-opacity='0.42' stroke-width='1'/>
+                <g>
+                  <animateTransform attributeName='transform' type='rotate' from='0 0 0' to='360 0 0' dur='8s' repeatCount='indefinite'/>
+                  <circle cx='34' cy='0' r='3.5' fill='#B8D4F0'/>
+                  <circle cx='-34' cy='0' r='3.5' fill='#B8D4F0'/>
+                </g>
+                <!-- pulsing core -->
+                <circle r='24' fill='url(#silverCoreGlow)'>
+                  <animate attributeName='r' values='22;28;22' dur='2.4s' repeatCount='indefinite'/>
+                </circle>
+                <circle r='11' fill='#DCE4EC'/>
+                <circle r='4.5' fill='#FFFFFF'/>
+              </svg>
+            </div>
             <div class='robot-cloud'>Silver: Dual-Regime signal ⚪</div>
             <div class='robot-cloud'>Industrial demand tracked 🏭</div>
             <div class='robot-cloud'>Gold-Silver ratio: live ⚖️</div>
