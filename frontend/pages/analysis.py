@@ -540,16 +540,61 @@ if not st.session_state.result:
 
             progress_bar.empty()
 
-            # SAFETY NET: Python band overrides for numeric factors.
+            # SAFETY NET: Python band overrides for numeric factors. Inlined
+            # so stale graph.nodes import can't poison the extraction.
             try:
-                from graph.nodes import _suggest_silver_score, HINTABLE_FACTORS
+                import re as _re_sn
                 from tools.cache_utils import _looks_like_error
+
+                def _sn_extract(s):
+                    if not isinstance(s, str):
+                        return None
+                    tail = s.split(":", 1)[1] if ":" in s else s
+                    m = _re_sn.search(r'-?\d+\.?\d*', tail)
+                    if not m:
+                        return None
+                    try:
+                        return float(m.group(0))
+                    except (ValueError, TypeError):
+                        return None
+
+                def _sn_silver_band(k, raw):
+                    v = _sn_extract(raw)
+                    if v is None:
+                        return None
+                    if k == "rate_environment":
+                        if v < 2.5: return 5
+                        if v < 3.5: return 3
+                        if v < 4.5: return -2
+                        if v < 5: return -5
+                        return -7
+                    if k == "gold_silver_ratio":
+                        if v < 50: return -4
+                        if v < 65: return -1
+                        if v < 80: return 2
+                        if v < 95: return 5
+                        return 7
+                    if k == "usd_index":
+                        if v < 95: return 4
+                        if v < 100: return 2
+                        if v < 102: return -2
+                        if v < 105: return -4
+                        return -6
+                    if k == "inflation_expectations":
+                        if v < 2: return -2
+                        if v < 2.3: return -1
+                        if v < 2.6: return 2
+                        if v < 3: return 4
+                        return 5
+                    return None
+
+                _sn_keys = {"rate_environment", "gold_silver_ratio", "usd_index", "inflation_expectations"}
                 if isinstance(result.get("scores"), dict):
-                    for factor_key in HINTABLE_FACTORS:
+                    for factor_key in _sn_keys:
                         raw = str(result.get(factor_key, ""))
                         if _looks_like_error(raw):
                             continue
-                        suggested = _suggest_silver_score(factor_key, raw)
+                        suggested = _sn_silver_band(factor_key, raw)
                         if suggested is not None:
                             result["scores"][factor_key] = suggested
             except Exception as _e:
