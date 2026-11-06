@@ -424,25 +424,6 @@ if not st.session_state.result:
         animation:silver-disc-pulse 3.2s ease-in-out infinite;
     }
     @keyframes silver-disc-pulse{0%,100%{opacity:.55;transform:translateX(-50%) scaleX(1);}50%{opacity:.95;transform:translateX(-50%) scaleX(1.08);}}
-    /* Glowing scanner eyes layered over the robot visor */
-    .robot-eye{
-        position:absolute;width:18px;height:18px;border-radius:50%;
-        background:radial-gradient(circle,rgba(255,255,255,.95) 0%,rgba(140,200,255,.55) 42%,transparent 72%);
-        pointer-events:none;mix-blend-mode:screen;z-index:2;
-        animation:silver-eye-pulse 2.6s ease-in-out infinite;
-    }
-    .robot-eye-l{top:36%;left:34%;}
-    .robot-eye-r{top:36%;left:52%;animation-delay:.13s;}
-    @keyframes silver-eye-pulse{0%,100%{opacity:.55;transform:scale(1);}50%{opacity:1;transform:scale(1.2);}}
-    /* Antenna status LED */
-    .robot-led{
-        position:absolute;top:-6px;left:calc(50% - 4.5px);
-        width:9px;height:9px;border-radius:50%;background:#FFFFFF;
-        box-shadow:0 0 14px 3px rgba(200,225,255,.95),0 0 24px 6px rgba(140,200,255,.55);
-        pointer-events:none;z-index:2;
-        animation:silver-led-blink 1.8s ease-in-out infinite;
-    }
-    @keyframes silver-led-blink{0%,100%{opacity:.4;}50%{opacity:1;}}
     .robot-cloud{
         position:absolute;top:-10px;right:-180px;
         background:rgba(30,35,40,0.95);border:1px solid rgba(184,196,204,0.4);
@@ -487,9 +468,6 @@ if not st.session_state.result:
         <div class='robot-wrap-outer'>
             <div class='robot-rig'>
                 <img class='hero-robot-img' src='data:image/png;base64,PLACEHOLDER' width='180' style='border-radius:24px;'/>
-                <span class='robot-eye robot-eye-l'></span>
-                <span class='robot-eye robot-eye-r'></span>
-                <span class='robot-led'></span>
             </div>
             <div class='robot-cloud'>Silver: Dual-Regime signal ⚪</div>
             <div class='robot-cloud'>Industrial demand tracked 🏭</div>
