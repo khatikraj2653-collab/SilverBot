@@ -411,6 +411,25 @@ if not st.session_state.result:
     with open(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'static', 'robot_b64.txt'), 'r') as f:
         ROBOT_IMG = f.read()
 
+    # Metallic shine sweep CSS (separate block — needs ROBOT_IMG via f-string)
+    st.markdown(f"""<style>
+    .robot-rig::after {{
+        content:'';position:absolute;top:0;left:0;width:180px;height:180px;
+        background:linear-gradient(115deg,transparent 40%,rgba(255,255,255,0.55) 48%,rgba(255,255,255,0.9) 50%,rgba(255,255,255,0.55) 52%,transparent 60%);
+        background-size:240% 100%;background-position:-120% 0;
+        pointer-events:none;z-index:3;
+        -webkit-mask-image:url(data:image/png;base64,{ROBOT_IMG});mask-image:url(data:image/png;base64,{ROBOT_IMG});
+        -webkit-mask-size:180px 180px;mask-size:180px 180px;
+        -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
+        animation:robot-shine 6s cubic-bezier(.55,.05,.45,.95) infinite;
+        animation-delay:1.5s;
+    }}
+    @keyframes robot-shine {{
+        0%,8% {{ background-position:-120% 0; }}
+        32%,100% {{ background-position:220% 0; }}
+    }}
+    </style>""", unsafe_allow_html=True)
+
     hero_robot_html = """
     <style>
     @keyframes rbounce{0%,100%{transform:translateY(0) rotate(0deg);}50%{transform:translateY(-10px) rotate(-3deg);}}
