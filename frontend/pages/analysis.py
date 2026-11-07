@@ -13,6 +13,7 @@ import json
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
 import streamlit as st
+import streamlit.components.v1 as components
 
 # Loader logic: full-screen overlay on FIRST visit to hide heavy cold-start
 # imports; tiny inline spinner on subsequent reruns (button clicks, etc.) so
@@ -397,6 +398,10 @@ with st.sidebar:
                     st.rerun()
 
 
+# Celebration confetti — fires once after a fresh analysis sets the result.
+if st.session_state.pop("_celebrate", False):
+    components.html("""<script>(function(){try{var p=window.parent;if(!p||p===window)return;var d=p.document;var w=p.window;if(d.getElementById('celebrate-fx'))return;var cv=d.createElement('canvas');cv.id='celebrate-fx';cv.style.cssText='position:fixed;top:0;left:0;pointer-events:none;z-index:2147483645;';d.body.appendChild(cv);var ctx=cv.getContext('2d');var W=w.innerWidth,H=Math.min(w.innerHeight,900);cv.width=W*devicePixelRatio;cv.height=H*devicePixelRatio;cv.style.width=W+'px';cv.style.height=H+'px';ctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);var CL=['#FFFFFF','#8CC8FF','#B8D4F0','#E4ECF2','#AABFD6','#D0DEEA','#9CC4E8'];var ps=[];for(var i=0;i<140;i++){ps.push({x:W/2+(Math.random()-0.5)*160,y:H*0.25+(Math.random()-0.5)*80,vx:(Math.random()-0.5)*9,vy:-4-Math.random()*8,r:3+Math.random()*4,rot:Math.random()*6.28,vr:(Math.random()-0.5)*0.3,c:CL[(Math.random()*CL.length)|0],life:1,decay:0.004+Math.random()*0.006,shape:Math.random()<0.5?'r':'s'});}var t0=performance.now();function tick(now){ctx.clearRect(0,0,W,H);var alive=0;for(var i=0;i<ps.length;i++){var p=ps[i];if(p.life<=0)continue;alive++;p.x+=p.vx;p.y+=p.vy;p.vy+=0.25;p.vx*=0.995;p.rot+=p.vr;p.life-=p.decay;ctx.save();ctx.globalAlpha=Math.max(0,p.life);ctx.translate(p.x,p.y);ctx.rotate(p.rot);ctx.fillStyle=p.c;if(p.shape==='r'){ctx.fillRect(-p.r,-p.r*0.5,p.r*2,p.r);}else{ctx.beginPath();ctx.arc(0,0,p.r*0.7,0,Math.PI*2);ctx.fill();}ctx.restore();}if(alive===0||now-t0>3500){cv.remove();return;}requestAnimationFrame(tick);}requestAnimationFrame(tick);}catch(e){}})();</script>""", height=0)
+
 if not st.session_state.result:
     st.markdown("""
     <div style='padding:60px 20px 20px;text-align:center'>
@@ -464,11 +469,32 @@ if not st.session_state.result:
         8%{opacity:0;transform:translateY(-6px);}
         100%{opacity:0;}
     }
+    /* Thinking state when Run Analysis is clicked */
+    .robot-rig.thinking{animation:rbounce-tilt 1.5s ease-in-out infinite !important;}
+    @keyframes rbounce-tilt{
+        0%,100%{transform:translateY(-3px) rotate(-6deg);}
+        50%{transform:translateY(-6px) rotate(6deg);}
+    }
+    .thinking-bubble{position:absolute;top:-32px;left:50%;transform:translateX(-50%);display:none;gap:7px;z-index:4;pointer-events:none;}
+    .robot-rig.thinking .thinking-bubble{display:flex;}
+    .thinking-bubble span{
+        width:10px;height:10px;border-radius:50%;
+        background:radial-gradient(circle at 35% 30%,#FFFFFF,#8CC8FF);
+        box-shadow:0 0 10px rgba(140,200,255,0.8);
+        opacity:0.35;animation:thinking-dot 1.3s ease-in-out infinite;
+    }
+    .thinking-bubble span:nth-child(2){animation-delay:0.18s;}
+    .thinking-bubble span:nth-child(3){animation-delay:0.36s;}
+    @keyframes thinking-dot{
+        0%,100%{opacity:0.3;transform:scale(0.8);}
+        50%{opacity:1;transform:scale(1.15);}
+    }
     </style>
     <div style='display:flex;justify-content:center;margin-bottom:16px'>
         <div class='robot-wrap-outer'>
             <div class='robot-rig'>
                 <img class='hero-robot-img' src='data:image/png;base64,PLACEHOLDER' width='180' style='border-radius:24px;'/>
+                <div class='thinking-bubble'><span></span><span></span><span></span></div>
             </div>
             <div class='robot-cloud'>Silver: Dual-Regime signal ⚪</div>
             <div class='robot-cloud'>Industrial demand tracked 🏭</div>
@@ -496,6 +522,10 @@ if not st.session_state.result:
         st.markdown("<div style='padding-top:20px;text-align:center'>", unsafe_allow_html=True)
         analyse = st.button("Run Analysis →", use_container_width=True)
         st.markdown("</div>", unsafe_allow_html=True)
+
+    # Robot state hook — tilts robot + shows thinking dots the moment "Run Analysis"
+    # is clicked (JS injected into parent doc via components.html).
+    components.html("""<script>(function(){try{var p=window.parent;if(!p||p===window)return;var d=p.document;if(d.getElementById('robot-state-hook'))return;var s=d.createElement('script');s.id='robot-state-hook';s.textContent="(function(){function hook(){var bs=document.querySelectorAll('button');for(var i=0;i<bs.length;i++){var b=bs[i];if(b.dataset.rsh)continue;var t=b.textContent||'';if(/Run Analysis|Analyse|Analyze/i.test(t)){b.dataset.rsh='1';b.addEventListener('click',function(){var r=document.querySelector('.robot-rig');if(r)r.classList.add('thinking');});}}}hook();var mo=new MutationObserver(hook);mo.observe(document.body,{childList:true,subtree:true});})();";d.body.appendChild(s);}catch(e){}})();</script>""", height=0)
 
     if analyse:
         log_event("search", detail="Silver analysis run")
@@ -613,6 +643,7 @@ if not st.session_state.result:
                 print(f"[safety-net Option B silver] skipped: {_e}", flush=True)
 
             st.session_state.result = result
+            st.session_state._celebrate = True  # fire confetti on the next render
 
             parsed = parse_prediction(result.get("prediction", ""))
             save_history(parsed["combined_status"], f"{parsed['combined_strength']}%",
